@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop – AlbaSpace</title>
+  <!-- Temel stil dosyaları ve mağazaya özel stil -->
+  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/shop.css">
+  <style>
+    :root {
+      --header-bg: #020617;
+      --accent: #00c2ff;
+      --page-bg: #020617;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+    }
+    body { background: #020617 url("/assets/images/space-bg.jpg") center/cover fixed no-repeat; color: var(--text-main); }
+  </style>
+  <!-- Header/footer'ı yüklemek ve sepet mantığını eklemek için scriptler -->
+  <script src="/assets/js/include.js" defer></script>
+  <script src="/assets/js/menu-toggle.js" defer></script>
+  <script src="/assets/js/cart.js" defer></script>
+</head>
+<body>
+  <!-- Dinamik başlık dahil etme. include.js, bunu mevcut sitenizdeki
+       /header-en.html içeriğiyle değiştirecektir. -->
+  <div data-include="/header-en.html"></div>
+
+  <main class="shop-container">
+    <h1 style="text-align:center;margin-bottom:8px;">Shop</h1>
+    <p style="text-align:center;margin-bottom:32px;color:var(--text-muted);">Discover AlbaSpace clothing and collections.</p>
+    <div class="product-list">
+      <!-- 1 hoodie1 -->
+      <a href="/eng/product-hoodie1.html" class="product-card">
+        <img src="/assets/products/hoodie1.png" alt="Hoodie" loading="lazy">
+        <div class="product-info">
+          <h3>Hoodie</h3>
+          <div class="product-price"><del>$46.67</del> - discount %30 $32.67</div>
+        </div>
+      </a>
+      <!-- 2 Hoodie -->
+      <a href="/eng/product-hoodie.html" class="product-card">
+        <img src="/assets/products/hoodie.png" alt="Hoodie" loading="lazy">
+        <div class="product-info">
+          <h3>Hoodie</h3>
+          <div class="product-price"><del>$46.67</del> - discount 30% - $32.67</div>
+        </div>
+      </a>
+      <!-- 3 Hat -->
+      <a href="/eng/product-hat.html" class="product-card">
+        <img src="/assets/products/hat.png" alt="Cüb">
+        <div class="product-info">
+          <h3>Cüb</h3>
+          <div class="product-price"><del>$5.00</del> - discount %20 - $4.00</div>
+        </div>
+      </a>
+
+
+      <!-- 4 Stanley -->
+      <a href="/eng/product-stanley.html" class="product-card">
+        <img src="/assets/products/stanley.png" alt="Stanley Thermos">
+        <div class="product-info">
+          <h3>Stanley Thermos</h3>
+          <div class="product-price"><del>$96.00</del> - discount %20 - $76.80</div>
+        </div>
+      </a>
+
+      <!-- 5 T-Shirt -->
+      <a href="/eng/product-shirt.html" class="product-card">
+        <img src="/assets/products/shirt.png" alt="T-Shirt">
+        <div class="product-info">
+          <h3>T-Shirt</h3>
+          <div class="product-price"><del>$30.00</del> - discount 30% - $21.00</div>
+        </div>
+      </a>
+
+      <!-- 6 Shirt 1 -->
+      <a href="/eng/product-shirt1.html" class="product-card">
+        <img src="/assets/products/shirt1.png" alt="T-Shirt">
+        <div class="product-info">
+          <h3>T-Shirt</h3>
+          <div class="product-price"><del>$30.00</del> - discount 30% - $21.00</div>
+        </div>
+      </a>
+
+
+      <!-- 7 Book -->
+      <a href="/eng/product-albamenvelara.html" class="product-card">
+        <img src="/assets/products/albamenvelara.jpg" alt="Book">
+        <div class="product-info">
+          <h3>Book</h3>
+          <div class="product-price"><del>$50.00</del> - discount 30% $35.00</div>
+        </div>
+      </a>
+
+      <!-- 8 Book PDF -->
+      <a href="/eng/product-albamenvelara1.html" class="product-card">
+        <img src="/assets/products/albemanvelara1.jpg" alt="Book PDF">
+        <div class="product-info">
+          <h3>Book PDF</h3>
+          <div class="product-price"><del>$13.33</del> - discount 60% $5.33</div>
+        </div>
+      </a>
+
+
+
+
+
+
+
+    </div>
+  </main>
+
+  <!-- Dinamik footer dahil etme -->
+  <div data-include="/footer-en.html"></div>
+</body>
+</html>
+    

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>AlbaSpace – Hizmetler</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Общие стили хедера и футера -->
+  <link rel="stylesheet" href="/assets/css/site.css" />
+  <script src="/assets/js/include.js" defer></script>
+  <script src="/assets/js/menu-toggle.js" defer></script>
+
+  <style>
+    :root {
+      --header-bg: #020617;
+      --accent: #00c2ff;
+    }
+
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:url('/assets/images/space-bg.jpg') no-repeat center center fixed;
+      background-size:cover;
+      color:#ffffff;
+    }
+
+    .page-wrapper{
+      max-width:1200px;
+      margin:70px auto 80px;
+      padding:0 20px 40px;
+    }
+
+    .services-title{
+      text-align:center;
+      font-size:32px;
+      margin-bottom:6px;
+    }
+
+    .services-sub{
+      text-align:center;
+      font-size:14px;
+      color:#e5e7eb;
+      margin-bottom:26px;
+    }
+
+    .services-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:24px;
+    }
+
+    .service-card{
+      background:rgba(15,23,42,0.96);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 14px 30px rgba(0,0,0,0.8);
+      border:1px solid rgba(31,41,55,1);
+      display:flex;
+      flex-direction:column;
+      transition:transform .18s ease-out, box-shadow .18s ease-out, border-color .18s ease-out;
+    }
+
+    .service-card:hover{
+      transform:translateY(-4px);
+      border-color:rgba(56,189,248,0.9);
+      box-shadow:
+        0 0 26px rgba(56,189,248,0.55),
+        0 18px 40px rgba(0,0,0,0.95);
+    }
+
+    .service-card img{
+      width:100%;
+      height:180px;
+      object-fit:cover;
+      display:block;
+    }
+
+    .card-content{
+      padding:18px 18px 20px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .service-card h3{
+      font-size:18px;
+      margin-bottom:8px;
+    }
+
+    .service-card p{
+      font-size:14px;
+      line-height:1.6;
+      color:#e5e7eb;
+    }
+
+    .service-card a{
+      margin-top:16px;
+      align-self:center;
+      padding:8px 16px;
+      border-radius:999px;
+      text-decoration:none;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      background:linear-gradient(90deg,#00c2ff,#38bdf8,#2563eb);
+      color:#020617;
+      font-weight:600;
+      box-shadow:0 0 18px rgba(56,189,248,0.7);
+    }
+
+    .service-card a:hover{
+      filter:brightness(1.1);
+    }
+
+    @media(max-width:900px){
+      .page-wrapper{ margin-top:90px; }
+      .service-card a{
+        text-align:center;
+      }
+    }
+
+    .ai-placeholder{
+      height:100%;
+      border-radius:14px;
+      border:1px dashed rgba(148,163,184,0.35);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:18px;
+      background:rgba(15,23,42,0.55);
+      line-height:1.5;
+      color:#cbd5f5;
+    }
+  </style>
+</head>
+<body>
+  <!-- общий хедер -->
+  <div data-include="/header-tr.html"></div>
+
+  <div class="page-wrapper">
+    <h1 class="services-title">Hizmetlerimiz</h1>
+    <p class="services-sub">
+      Uzayı, teknolojiyi ve eğitimi bir araya getirerek markalar ve öğrenciler için unutulmaz deneyimler tasarlıyoruz.
+    </p>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <img src="/assets/images/vr.png" alt="VR Oyunları">
+        <div class="card-content">
+          <h3>Sanal Gerçeklik (VR) Oyunları</h3>
+          <p>
+            Uzay ve bilim temalı VR oyunlarımızla, öğrencilerin ve ziyaretçilerin
+            etkileşimli öğrenme süreçlerini daha heyecanlı ve kalıcı hale getiriyoruz.
+          </p>
+          <a href="#">Detaylar</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img src="/assets/images/vr1.png" alt="VR Simülasyonları">
+        <div class="card-content">
+          <h3>Sanal Gerçeklik (VR) Simülasyonları</h3>
+          <p>
+            Roket fırlatmalarından gezegen keşiflerine kadar, gerçekçi VR
+            simülasyonlarımızla kullanıcıları meta evrenlerde ilham verici yolculuklara çıkarıyoruz.
+          </p>
+          <a href="#">Detaylar</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img src="/assets/images/2025-12-08_21-01-19.png" alt="Stratosfer Uçuşları">
+        <div class="card-content">
+          <h3>Stratosfer Uçuşları &amp; Uzay Reklamları</h3>
+          <p>
+            Yüksek irtifa balonları ile markaları ve deneyleri stratosfere taşıyor,
+            gerçek uzay görüntüleriyle fark yaratan kampanyalar tasarlıyoruz.
+          </p>
+          <a href="#">Detaylar</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <img src="/assets/images/Gemini_Generated_Image_yk5xbwyk5xbwyk5x.png" alt="3D ve AR İçerik">
+        <div class="card-content">
+          <h3>3D &amp; Artırılmış Gerçeklik (AR) İçerikleri</h3>
+          <p>
+            Uydular, gezegenler ve uzay araçları için yüksek kaliteli 3D modeller
+            ve AR deneyimleri üreterek sergiler, müzeler ve eğitim projeleri için
+            yenilikçi çözümler sunuyoruz.
+          </p>
+          <a href="#">Detaylar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- общий футер -->
+  <div data-include="/footer-tr.html"></div>
+</body>
+</html>

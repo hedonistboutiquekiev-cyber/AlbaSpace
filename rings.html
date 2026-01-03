@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AR Try-On v13 (Calibrated Fix)</title>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        
+        #input_video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 0;
+        }
+
+        #output_canvas { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 1; pointer-events: none;
+        }<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AR Try-On v14 (Shiny & Fixed)</title>
+    <style>
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        
+        #input_video {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; z-index: 0;
+            transform: scaleX(-1); /* Зеркалим видео для удобства */
+        }
+
+        #output_canvas { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 1; pointer-events: none;
+            transform: scaleX(-1); /* Зеркалим канвас, чтобы совпадало с видео */
+        }
+
+        #ui-container {
+            position: absolute; bottom: 30px; left: 0; width: 100%;
+            display: flex; justify-content: center; z-index: 10; gap: 20px;
+        }
+        .arrow-btn {
+            background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%;
+            width: 60px; height: 60px; font-size: 30px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #loading-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; font-size: 16px; z-index: 5; 
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 30px;
+            text-align: center; pointer-events: none;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/examples/": "https://unpkg.com/three@0.128.0/examples/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="loading-text">Kamera başlatılıyor...<br>Elini göster (Покажи руку)</div>
+
+    <video id="input_video" playsinline muted autoplay></video>
+    <canvas id="output_canvas"></canvas>
+
+    <div id="ui-container">
+        <button class="arrow-btn" id="prev-btn">◀</button>
+        <button class="arrow-btn" id="next-btn">▶</button>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+        import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+
+        const models = ['ring_01.glb', 'ring_02.glb', 'ring_03.glb'];
+        
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const loadingText = document.getElementById('loading-text');
+
+        let currentModelIndex = 0;
+        let currentRing = null;
+
+        // Scene
+        const scene = new THREE.Scene();
+        const camera3D = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera3D.position.z = 2; // Базовая дистанция
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        
+        // ВАЖНО: Настройки для реализма и блеска
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2; // Чуть ярче
+
+        // Генерация окружения для отражений (чтобы металл блестел)
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+        scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+
+        // Освещение (Lighting)
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 3.0); // Яркий направленный свет
+        dirLight.position.set(2, 5, 5);
+        scene.add(dirLight);
+
+        const pointLight = new THREE.PointLight(0xffffff, 2.0); // Свет для бликов
+        pointLight.position.set(-2, 3, 2);
+        scene.add(pointLight);
+
+        // Loader
+        const loader = new GLTFLoader();
+
+        function loadRing(index) {
+            if (currentRing) { scene.remove(currentRing); currentRing = null; }
+
+            loader.load(models[index], (gltf) => {
+                currentRing = gltf.scene;
+                
+                // Проходимся по материалам, чтобы включить максимальный блеск
+                currentRing.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                        if(child.material) {
+                            child.material.envMapIntensity = 1.5; // Усиливаем отражения
+                            child.material.needsUpdate = true;
+                        }
+                    }
+                });
+
+                currentRing.scale.set(10, 10, 10); 
+                scene.add(currentRing);
+            }, undefined, (error) => {
+                console.log("Fallback placeholder");
+                const geo = new THREE.TorusGeometry(0.15, 0.03, 16, 32);
+                const mat = new THREE.MeshStandardMaterial({ 
+                    color: 0xFFD700, 
+                    metalness: 1.0, 
+                    roughness: 0.1,
+                    envMapIntensity: 2.0 
+                });
+                currentRing = new THREE.Mesh(geo, mat);
+                currentRing.rotation.x = Math.PI / 2;
+                scene.add(currentRing);
+            });
+        }
+        loadRing(0);
+
+        // MediaPipe Setup
+        const hands = new window.Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.6,
+            minTrackingConfidence: 0.6
+        });
+
+        let textHidden = false;
+
+        hands.onResults((results) => {
+            renderer.clear();
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (!textHidden) {
+                    loadingText.style.display = 'none';
+                    textHidden = true;
+                }
+                
+                const landmarks = results.multiHandLandmarks[0];
+                
+                // 13 - MCP (Костяшка), 14 - PIP (Первый сустав)
+                const p13 = landmarks[13]; 
+                const p14 = landmarks[14]; 
+
+                if (currentRing) {
+                    // --- ЛОГИКА ПОЗИЦИИ ---
+                    
+                    // Интерполяция: 0 - это костяшка, 1 - это сустав.
+                    // Кольцо обычно сидит в самом низу, поэтому берем 0.15 (15% от костяшки)
+                    const lerpFactor = 0.15; 
+                    
+                    const x = p13.x + (p14.x - p13.x) * lerpFactor;
+                    const y = p13.y + (p14.y - p13.y) * lerpFactor;
+                    
+                    // Преобразование координат (с поправкой на Z)
+                    // Эти коэффициенты (10 и -5) зависят от FOV камеры и дистанции
+                    // Если кольцо "плавает", нужно менять Z
+                    const screenZ = -5; 
+                    const screenX = (x - 0.5) * 10; 
+                    const screenY = -(y - 0.5) * 10;
+                    
+                    currentRing.position.set(screenX, screenY, screenZ);
+
+                    // Вращение (Ориентация пальца)
+                    // Вычисляем угол пальца в 2D плоскости
+                    const dx = p14.x - p13.x;
+                    const dy = p14.y - p13.y;
+                    let angleZ = Math.atan2(dy, dx); 
+                    
+                    // Дополнительная коррекция вращения по X/Y для объема (простая эмуляция)
+                    // MediaPipe дает Z координату, попробуем использовать её для легкого наклона
+                    const dz = p14.z - p13.z; 
+                    
+                    currentRing.rotation.set(0, 0, 0); // Сброс
+                    // Вращаем вокруг Z (основное направление пальца)
+                    // -Math.PI/2 нужно, так как кольцо по умолчанию смотрит вверх/вниз
+                    currentRing.rotation.z = angleZ - Math.PI / 2; 
+
+                    // Легкий наклон, если рука поворачивается (экспериментально)
+                    currentRing.rotation.x = -dz * 2; 
+                }
+            }
+            renderer.render(scene, camera3D);
+        });
+
+        const camera = new window.Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 1280,
+            height: 720,
+            facingMode: 'environment' // Основная камера
+        });
+        camera.start();
+
+        document.getElementById('next-btn').onclick = () => {
+            currentModelIndex = (currentModelIndex + 1) % models.length;
+            loadRing(currentModelIndex);
+        }
+        document.getElementById('prev-btn').onclick = () => {
+            currentModelIndex = (currentModelIndex - 1 + models.length) % models.length;
+            loadRing(currentModelIndex);
+        }
+
+        window.addEventListener('resize', () => {
+            camera3D.aspect = window.innerWidth / window.innerHeight;
+            camera3D.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
+
+        #ui-container {
+            position: absolute; bottom: 30px; left: 0; width: 100%;
+            display: flex; justify-content: center; z-index: 10; gap: 20px;
+        }
+        .arrow-btn {
+            background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%;
+            width: 60px; height: 60px; font-size: 30px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #loading-text {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            color: white; font-size: 16px; z-index: 5; 
+            background: rgba(0,0,0,0.6); padding: 15px 25px; border-radius: 30px;
+            text-align: center; pointer-events: none;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/examples/": "https://unpkg.com/three@0.128.0/examples/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="loading-text">Kamera başlatılıyor...<br>Elini göster (Покажи руку)</div>
+
+    <video id="input_video" playsinline muted autoplay></video>
+    <canvas id="output_canvas"></canvas>
+
+    <div id="ui-container">
+        <button class="arrow-btn" id="prev-btn">◀</button>
+        <button class="arrow-btn" id="next-btn">▶</button>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+        const models = ['ring_01.glb', 'ring_02.glb', 'ring_03.glb'];
+        
+        const videoElement = document.getElementById('input_video');
+        const canvasElement = document.getElementById('output_canvas');
+        const loadingText = document.getElementById('loading-text');
+
+        let currentModelIndex = 0;
+        let currentRing = null;
+        let isFallback = false; 
+
+        // Scene
+        const scene = new THREE.Scene();
+        const camera3D = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera3D.position.z = 2;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Light
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 2.0); 
+        hemiLight.position.set(0, 20, 0);
+        scene.add(hemiLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(3, 10, 10);
+        scene.add(dirLight);
+
+        // Loader
+        const loader = new GLTFLoader();
+
+        function loadRing(index) {
+            if (currentRing) { scene.remove(currentRing); currentRing = null; }
+            isFallback = false;
+
+            loader.load(models[index], (gltf) => {
+                currentRing = gltf.scene;
+                currentRing.scale.set(10, 10, 10); 
+                scene.add(currentRing);
+            }, undefined, (error) => {
+                console.log("Fallback mode");
+                isFallback = true;
+                const geo = new THREE.TorusGeometry(0.15, 0.03, 16, 32);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
+                currentRing = new THREE.Mesh(geo, mat);
+                currentRing.rotation.x = Math.PI / 2;
+                scene.add(currentRing);
+            });
+        }
+        loadRing(0);
+
+        // MediaPipe
+        const hands = new window.Hands({locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }});
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        let textHidden = false;
+
+        hands.onResults((results) => {
+            renderer.clear();
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                if (!textHidden) {
+                    loadingText.style.display = 'none';
+                    textHidden = true;
+                }
+                
+                const landmarks = results.multiHandLandmarks[0];
+                const p13 = landmarks[13]; 
+                const p14 = landmarks[14]; 
+
+                if (currentRing) {
+                    // === НАСТРОЙКА ПОЗИЦИИ (ИСПРАВЛЕНО) ===
+                    // Я увеличил эти значения, чтобы сдвинуть кольцо
+                    
+                    const moveUp = 0.3;   // Поднимаем вверх
+                    const moveLeft = 0.15; // Сдвигаем влево
+                    
+                    // -------------------------------------
+
+                    const x = (p13.x + p14.x) / 2;
+                    const y = (p13.y + p14.y) / 2;
+
+                    const screenX = ((x - 0.5) * 10) - moveLeft; 
+                    const screenY = (-(y - 0.5) * 10) + moveUp;
+                    const screenZ = -5;
+                    
+                    currentRing.position.set(screenX, screenY, screenZ);
+
+                    // Вращение
+                    const dx = p14.x - p13.x;
+                    const dy = p14.y - p13.y;
+                    const angle = Math.atan2(dy, dx);
+                    
+                    currentRing.rotation.z = angle - Math.PI / 2;
+                }
+            }
+            renderer.render(scene, camera3D);
+        });
+
+        const camera = new window.Camera(videoElement, {
+            onFrame: async () => {
+                await hands.send({image: videoElement});
+            },
+            width: 1280,
+            height: 720,
+            facingMode: 'environment'
+        });
+        camera.start();
+
+        document.getElementById('next-btn').onclick = () => {
+            currentModelIndex = (currentModelIndex + 1) % models.length;
+            loadRing(currentModelIndex);
+        }
+        document.getElementById('prev-btn').onclick = () => {
+            currentModelIndex = (currentModelIndex - 1 + models.length) % models.length;
+            loadRing(currentModelIndex);
+        }
+
+        window.addEventListener('resize', () => {
+            camera3D.aspect = window.innerWidth / window.innerHeight;
+            camera3D.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,70 @@
+git apply -p0 <<'PATCH'
+*** Begin Patch
+*** Update File: header-en.html
+@@
+-    <!-- Social icons -->
+-    <div class="header-social">
+-
+-      <a href="https://www.instagram.com/albaspace_/" target="_blank" aria-label="Instagram" data-track="inst">
+-        <img src="/assets/icons/inst.png" alt="Instagram">
+-      </a>
+-
+-      <a href="https://www.linkedin.com/in/idrisalbayrak/" target="_blank" aria-label="LinkedIn">
+-        <img src="/assets/icons/linkdin.png" alt="LinkedIn">
+-      </a>
+-
+-      <!-- WhatsApp -->
+-      <a href="https://wa.me/905387781018" target="_blank" aria-label="WhatsApp" data-track="whatsapp">
+-        <img src="/assets/icons/watsupp.png" alt="WhatsApp">
+-      </a>
+-
+-      <a href="https://www.youtube.com/@AlbaSpaceTr" target="_blank" aria-label="YouTube">
+-        <img src="/assets/icons/youtube.png" alt="YouTube">
+-      </a>
+-
+-    </div>
+-
+-
+-    <!-- Language switch -->
+-    <div class="top-lang-switch">
+-      <a href="/index.html" data-lang="tr" class="lang-flag" aria-label="Türkçe">
+-        <img src="/assets/icons/flag-tr.png" alt="Türkçe" />
+-      </a>
+-
+-      <a href="/eng/index.html" data-lang="en" class="lang-flag" aria-label="English">
+-        <img src="/assets/icons/flag-us.png" alt="English" />
+-      </a>
+-    </div>
++    <!-- Social icons + language switch -->
++    <div class="header-social">
++      <div class="social-row">
++        <a href="https://www.instagram.com/albaspace_/" target="_blank" aria-label="Instagram" data-track="inst">
++          <img src="/assets/icons/inst.png" alt="Instagram">
++        </a>
++
++        <a href="https://www.linkedin.com/in/idrisalbayrak/" target="_blank" aria-label="LinkedIn">
++          <img src="/assets/icons/linkdin.png" alt="LinkedIn">
++        </a>
++
++        <!-- WhatsApp -->
++        <a href="https://wa.me/905387781018" target="_blank" aria-label="WhatsApp" data-track="whatsapp">
++          <img src="/assets/icons/watsupp.png" alt="WhatsApp">
++        </a>
++
++        <a href="https://www.youtube.com/@AlbaSpaceTr" target="_blank" aria-label="YouTube">
++          <img src="/assets/icons/youtube.png" alt="YouTube">
++        </a>
++      </div>
++
++      <div class="top-lang-switch">
++        <a href="/index.html" data-lang="tr" class="lang-flag" aria-label="Türkçe">
++          <img src="/assets/icons/flag-tr.png" alt="Türkçe" />
++        </a>
++
++        <a href="/eng/index.html" data-lang="en" class="lang-flag" aria-label="English">
++          <img src="/assets/icons/flag-us.png" alt="English" />
++        </a>
++      </div>
++    </div>
+*** End Patch
+PATCH
