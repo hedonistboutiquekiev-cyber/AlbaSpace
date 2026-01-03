@@ -529,6 +529,12 @@
       .celestial-body.active {
         outline: 2px solid rgba(255,255,255,0.5);
         outline-offset: 5px;
+        box-shadow: 0 0 18px var(--glow-color), 0 0 40px var(--glow-color);
+        transform: scale(1.1);
+      }
+
+      .celestial-body.active:hover {
+        transform: scale(1.3) translateY(-20px);
       }
 
       .celestial-body .label {
@@ -918,19 +924,35 @@
       <!-- Ряд с Солнцем и планетами -->
       <div class="space-system-row">
         <!-- Солнце -->
-        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);">
+        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);" role="button" aria-pressed="true">
           <span class="label">Güneş</span>
         </div>
-        
+
         <!-- Планеты -->
-        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);"></div>
-        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);"></div>
-        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);"></div>
-        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);"></div>
-        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);"></div>
-        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);"></div>
-        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);"></div>
-        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);"></div>
+        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);" role="button" aria-pressed="false">
+          <span class="label">Merkür</span>
+        </div>
+        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);" role="button" aria-pressed="false">
+          <span class="label">Venüs</span>
+        </div>
+        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);" role="button" aria-pressed="false">
+          <span class="label">Dünya</span>
+        </div>
+        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);" role="button" aria-pressed="false">
+          <span class="label">Mars</span>
+        </div>
+        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);" role="button" aria-pressed="false">
+          <span class="label">Jüpiter</span>
+        </div>
+        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);" role="button" aria-pressed="false">
+          <span class="label">Satürn</span>
+        </div>
+        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);" role="button" aria-pressed="false">
+          <span class="label">Uranüs</span>
+        </div>
+        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);" role="button" aria-pressed="false">
+          <span class="label">Neptün</span>
+        </div>
       </div>
 
       <!-- Контент под планетами -->
@@ -1091,8 +1113,12 @@
         bodies.forEach(body => {
             body.addEventListener('click', () => {
                 // Смена активного состояния
-                bodies.forEach(b => b.classList.remove('active'));
+                bodies.forEach(b => {
+                  b.classList.remove('active');
+                  b.setAttribute('aria-pressed', 'false');
+                });
                 body.classList.add('active');
+                body.setAttribute('aria-pressed', 'true');
 
                 // Обновление контента
                 const id = body.getAttribute('data-id');
