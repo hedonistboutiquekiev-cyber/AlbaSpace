@@ -666,7 +666,36 @@ function createModelNavLoader() {
 function markActiveNav() {
   const path = normalizePath(window.location.pathname || "/");
   const navLinks = document.querySelectorAll(".main-nav a");
+  const isEnglish = (document.documentElement.lang || "").toLowerCase().startsWith("en") || path.startsWith("/eng/");
+  const isProductPage = /\/product-[^/]+\.html$/i.test(path);
   let matched = false;
+
+  const highlightShop = () => {
+    const targetPath = normalizePath(isEnglish ? "/eng/shop.html" : "/shop.html");
+    let found = false;
+    navLinks.forEach((a) => {
+      const href = a.getAttribute("href");
+      if (!href) return;
+      try {
+        const linkPath = normalizePath(new URL(href, window.location.origin).pathname);
+        if (linkPath === targetPath) { a.classList.add("active"); found = true; }
+      } catch (e) {
+        // fallback below
+      }
+      if (!found) {
+        const label = (a.textContent || "").trim().toUpperCase();
+        if ((isEnglish && label.includes("SHOP")) || (!isEnglish && label.includes("MAĞAZA"))) {
+          a.classList.add("active");
+          found = true;
+        }
+      }
+    });
+    return found;
+  };
+
+  if (isProductPage) {
+    matched = highlightShop();
+  }
   navLinks.forEach((a) => {
     const href = a.getAttribute("href");
     if (!href) return;
