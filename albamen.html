@@ -548,20 +548,6 @@
         opacity: 0.7;
       }
 
-      .celestial-body.active .label {
-        color: #ffffff;
-        opacity: 1;
-        font-weight: 600;
-        text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-      }
-
-      .selected-planet-note {
-        margin: -10px auto 10px;
-        color: #c7d6f5;
-        font-size: 0.95rem;
-        letter-spacing: 0.2px;
-      }
-
       .audio-btn {
         margin-top: 15px;
         background: linear-gradient(90deg, #7209b7, #00d4ff) !important;
@@ -580,6 +566,10 @@
         margin-right: auto;
         animation: fadeIn 0.5s ease;
       }
+
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
       @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -969,10 +959,6 @@
         </div>
       </div>
 
-      <div class="selected-planet-note" id="selectedPlanetLabel" aria-live="polite">
-        Seçilen: Güneş
-      </div>
-
       <!-- Контент под планетами -->
       <div class="planet-content-wrapper" id="planetDetailBox">
         <div class="glow-box glow-strong">
@@ -1127,7 +1113,6 @@
         const titleEl = document.getElementById('planetTitle');
         const descEl = document.getElementById('planetDesc');
         const detailBox = document.getElementById('planetDetailBox');
-        const selectionNote = document.getElementById('selectedPlanetLabel');
 
         bodies.forEach(body => {
             body.addEventListener('click', () => {
@@ -1142,10 +1127,9 @@
                 // Обновление контента
                 const id = body.getAttribute('data-id');
                 const data = spaceData[id];
-
+                
                 titleEl.textContent = data.title;
                 descEl.textContent = data.desc;
-                selectionNote.textContent = `Seçilen: ${data.title}`;
 
                 // Эффект появления текста
                 detailBox.style.animation = 'none';
