@@ -487,59 +487,81 @@
         margin: 0;
       }
 
-      .planets-list {
+      /* Новые стили для интерактивного ряда */
+      .space-system-row {
         display: flex;
+        align-items: center;
         justify-content: center;
-        gap: 1rem;
+        gap: 15px;
+        padding: 40px 0;
         flex-wrap: wrap;
-        margin: 18px 0 2rem;
+        min-height: 200px;
+      }
+
+      .celestial-body {
+        position: relative;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        background: radial-gradient(circle at 30% 30%, var(--body-color), #000);
+        box-shadow: 0 0 15px var(--glow-color);
+      }
+
+      .sun {
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle at center, #fff 0%, #ffcc00 30%, #ff4500 100%);
+        box-shadow: 0 0 40px rgba(255, 69, 0, 0.8);
       }
 
       .planet {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: #283046;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-        border: 1px solid rgba(255,255,255,0.12);
+        width: var(--body-size);
+        height: var(--body-size);
       }
 
-      .planet.active,
-      .planet:hover {
-        transform: scale(1.2);
+      /* Эффект при наведении */
+      .celestial-body:hover {
+        transform: scale(1.3) translateY(-20px);
+        box-shadow: 0 15px 30px var(--glow-color), 0 0 40px var(--glow-color);
+        z-index: 10;
       }
 
-      .planet-content {
-        max-width: 720px;
-        margin: 0 auto;
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 1.2rem;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+      .celestial-body.active {
+        outline: 2px solid rgba(255,255,255,0.5);
+        outline-offset: 5px;
       }
 
-      .planet-content h3 {
-        font-size: 1.7rem;
-        margin-bottom: 0.5rem;
-        color: #00d4ff;
-      }
-
-      .planet-content p {
+      .celestial-body .label {
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
         color: #a3b5d3;
-        font-size: 1rem;
-        margin-bottom: 1rem;
+        white-space: nowrap;
+        opacity: 0.7;
       }
 
-      .planet-content .btn {
-        padding: 0.6rem 1.2rem;
-        border-radius: 30px;
-        background-image: linear-gradient(90deg, #7209b7, #00b4d8);
-        color: #ffffff;
-        border: none;
+      .audio-btn {
+        margin-top: 15px;
+        background: linear-gradient(90deg, #7209b7, #00d4ff) !important;
+        transition: 0.3s;
       }
+      
+      .audio-btn:hover {
+        filter: brightness(1.2);
+        transform: translateY(-2px);
+      }
+
+      .planet-content-wrapper {
+        margin-top: 30px;
+        max-width: 720px;
+        margin-left: auto;
+        margin-right: auto;
+        animation: fadeIn 0.5s ease;
+      }
+
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
       /* =========================
          QUOTE & VALUES
@@ -886,27 +908,42 @@
     </section>
 
     <!-- PLANETS -->
+    <!-- ОБНОВЛЕННЫЙ РАЗДЕЛ ПЛАНЕТ -->
     <section class="planet-section container">
-      <div class="glow-box compact" style="max-width: 760px; margin: 0 auto 10px;">
-        <h2>Gezegeni Seç</h2>
+      <div class="glow-box compact" style="max-width: 760px; margin: 0 auto 30px;">
+        <h2>Güneş Sistemi'ni Keşfet</h2>
+        <p style="color: #a3b5d3; font-size: 0.9rem;">Gezegenlerin üzerine gelerek onları büyütün, detayları görmek için tıklayın.</p>
       </div>
 
-      <div class="planets-list">
-        <div class="planet active" data-planet="mercury" style="background:#9b5de5;"></div>
-        <div class="planet" data-planet="venus" style="background:#f72585;"></div>
-        <div class="planet" data-planet="earth" style="background:#2f80ed;"></div>
-        <div class="planet" data-planet="mars" style="background:#e94e77;"></div>
-        <div class="planet" data-planet="jupiter" style="background:#f2994a;"></div>
-        <div class="planet" data-planet="saturn" style="background:#f2c94c;"></div>
-        <div class="planet" data-planet="uranus" style="background:#00b4d8;"></div>
-        <div class="planet" data-planet="neptune" style="background:#4bb3fd;"></div>
+      <!-- Ряд с Солнцем и планетами -->
+      <div class="space-system-row">
+        <!-- Солнце -->
+        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);">
+          <span class="label">Güneş</span>
+        </div>
+        
+        <!-- Планеты -->
+        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);"></div>
+        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);"></div>
+        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);"></div>
+        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);"></div>
+        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);"></div>
+        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);"></div>
+        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);"></div>
+        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);"></div>
       </div>
 
-      <div class="planet-content" id="planetContent">
-        <div class="glow-box compact">
-          <h3>Merkür</h3>
-          <p>Güneş'e en yakın gezegen olan Merkür, küçük ve yoğun bir kayaç gök cismidir.</p>
-          <button class="btn">Sesli Dinle</button>
+      <!-- Контент под планетами -->
+      <div class="planet-content-wrapper" id="planetDetailBox">
+        <div class="glow-box glow-strong">
+          <h3 id="planetTitle">Güneş</h3>
+          <p id="planetDesc">Güneş sisteminin merkezinde yer alan, devasa bir plazma küresidir. Tüm yaşamın enerji kaynağıdır.</p>
+          <button class="btn audio-btn" id="playAudioBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px; vertical-align: middle;">
+              <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            Sesli Dinle
+          </button>
         </div>
       </div>
     </section>
@@ -1006,38 +1043,76 @@
             .catch((err) => console.error("Include failed for", url, err));
         });
       });
-
-      // Planet selection logic
       document.addEventListener("DOMContentLoaded", function () {
-        const planets = {
-          mercury: { title: "Merkür", text: "Güneş'e en yakın gezegen olan Merkür, küçük ve yoğun bir kayaç gök cismidir." },
-          venus: { title: "Venüs", text: "Venüs, yoğun atmosferi ve sıcak yüzeyiyle 'ikiz' gezegenimiz olarak bilinir." },
-          earth: { title: "Dünya", text: "Dünya, Güneş'e olan yaklaşık 150 milyon km uzaklığı ve yaşam için ideal koşullarıyla insanlığın evi." },
-          mars: { title: "Mars", text: "Mars, kızıl renkli yüzeyiyle tanınan, gelecekte insan kolonileri için en olası aday gezegendir." },
-          jupiter: { title: "Jüpiter", text: "Güneş Sistemi'nin en büyük gezegeni olan Jüpiter, dev gaz yapısıyla dikkat çeker." },
-          saturn: { title: "Satürn", text: "Benzersiz halkalarıyla ünlü Satürn, gaz devi gezegenler arasında yer alır." },
-          uranus: { title: "Uranüs", text: "Uranüs, eğik eksen eğimi ve mavi-yeşil rengiyle bilinen buz devi bir gezegendir." },
-          neptune: { title: "Neptün", text: "Neptün, Güneş Sistemi'nin en dış gezegenidir ve rüzgarlı, derin mavi atmosferiyle dikkat çeker." },
+        const spaceData = {
+            sun: {
+                title: "Güneş",
+                desc: "Güneş sisteminin merkezinde yer alan, devasa bir plazma küresidir. Tüm yaşamın enerji kaynağıdır."
+            },
+            mercury: {
+                title: "Merkür",
+                desc: "Güneş'e en yakın gezegen olan Merkür, küçük, kayalık ve atmosferi olmayan bir dünyadır."
+            },
+            venus: {
+                title: "Venüs",
+                desc: "Güneş sisteminin en sıcak gezegeni olan Venüs, kalın sülfürik asit bulutlarıyla kaplıdır."
+            },
+            earth: {
+                title: "Dünya",
+                desc: "Yaşamın olduğu bilinen tek gezegen. %71'i suyla kaplı mavi evimiz."
+            },
+            mars: {
+                title: "Mars",
+                desc: "'Kızıl Gezegen' olarak bilinir. İnce bir atmosferi ve devasa toz fırtınaları vardır."
+            },
+            jupiter: {
+                title: "Jüpiter",
+                desc: "En büyük gezegen. Bir gaz devi olup, meşhur 'Büyük Kırmızı Leke' fırtınasına ev sahipliği yapar."
+            },
+            saturn: {
+                title: "Satürn",
+                desc: "Görkemli halka sistemiyle bilinen, Güneş sisteminin ikinci büyük gaz devidir."
+            },
+            uranus: {
+                title: "Uranüs",
+                desc: "Yan yatmış bir eksende dönen, metan gazı nedeniyle mavi-yeşil görünen bir buz devidir."
+            },
+            neptune: {
+                title: "Neptün",
+                desc: "Güneş'e en uzak gezegen. Çok güçlü rüzgarların estiği, koyu mavi renkli bir dünyadır."
+            }
         };
 
-        const planetEls = document.querySelectorAll(".planet");
-        const planetContent = document.getElementById("planetContent");
+        const bodies = document.querySelectorAll('.celestial-body');
+        const titleEl = document.getElementById('planetTitle');
+        const descEl = document.getElementById('planetDesc');
+        const detailBox = document.getElementById('planetDetailBox');
 
-        planetEls.forEach((el) => {
-          el.addEventListener("click", () => {
-            planetEls.forEach((p) => p.classList.remove("active"));
-            el.classList.add("active");
+        bodies.forEach(body => {
+            body.addEventListener('click', () => {
+                // Смена активного состояния
+                bodies.forEach(b => b.classList.remove('active'));
+                body.classList.add('active');
 
-            const key = el.getAttribute("data-planet");
-            const info = planets[key] || planets.mercury;
+                // Обновление контента
+                const id = body.getAttribute('data-id');
+                const data = spaceData[id];
+                
+                titleEl.textContent = data.title;
+                descEl.textContent = data.desc;
 
-            const box = planetContent.querySelector(".glow-box");
-            box.querySelector("h3").textContent = info.title;
-            box.querySelector("p").textContent = info.text;
-          });
+                // Эффект появления текста
+                detailBox.style.animation = 'none';
+                detailBox.offsetHeight; /* trigger reflow */
+                detailBox.style.animation = 'fadeIn 0.5s ease';
+            });
         });
-      });
-    </script>
+        
+        // Логика кнопки аудио (заглушка)
+        document.getElementById('playAudioBtn').addEventListener('click', function() {
+            alert(titleEl.textContent + " hakkında sesli anlatım yakında eklenecek!");
+        });
+    });
 
 
 
