@@ -11,6 +11,12 @@
 body{
   margin:0;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  /* Ensure padding on 100% width elements does not push layout wider than the viewport */
+  box-sizing:border-box;
+  /* Prevent pages from exceeding the device width on mobile */
+  width:100%;
+  max-width:100vw;
+  overflow-x:hidden;
   /*
    * Mobile Safari fix for stretched background
    *
@@ -27,6 +33,11 @@ body{
    *     required on mobile Safarihttps://medium.com/@roberthaylor/background-images-not-showing-in-mobile-safari-try-this-b4fa3ed208f2#:~:text=Further%20research%20revealed%20that%20in,size%20as%20cover.
    *   - Kriesi support thread noting iOS devices do not support fixed backgroundshttps://kriesi.at/support/topic/ios-do-not-support-fixed-backgrounds/#:~:text=Participant.
    */
+}
+
+/* Apply border-box sizing everywhere to keep padded blocks within the viewport */
+*,*::before,*::after{
+  box-sizing:border-box;
 }
 
 /* Fix background attachment on mobile devices */
