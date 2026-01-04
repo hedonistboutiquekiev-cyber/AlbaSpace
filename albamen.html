@@ -479,7 +479,7 @@
         margin: 0;
       }
 
-      /* Новые стили для интерактивного ряда */
+      /* Styles for interactive row */
       .space-system-row {
         display: flex;
         align-items: center;
@@ -511,47 +511,43 @@
         height: var(--body-size);
       }
 
-      /* Эффект при наведении */
+      /* Hover Effects */
       .celestial-body:hover {
         transform: scale(1.3) translateY(-20px);
         box-shadow: 0 15px 30px var(--glow-color), 0 0 40px var(--glow-color);
         z-index: 10;
       }
 
+      /* Active State (Selected) */
       .celestial-body.active {
-        outline: 2px solid rgba(255,255,255,0.5);
-        outline-offset: 5px;
-        box-shadow: 0 0 18px var(--glow-color), 0 0 40px var(--glow-color);
-        transform: scale(1.1);
+        outline: 3px solid rgba(255,255,255,0.8);
+        outline-offset: 6px;
+        box-shadow: 0 0 25px var(--glow-color), 0 0 50px var(--glow-color);
+        transform: scale(1.2);
+        z-index: 20;
       }
 
       .celestial-body.active:hover {
-        transform: scale(1.3) translateY(-20px);
+        transform: scale(1.3) translateY(-10px);
       }
 
       .celestial-body .label {
         position: absolute;
-        bottom: -25px;
+        bottom: -30px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 12px;
+        font-size: 13px;
+        font-weight: 600;
         color: #a3b5d3;
         white-space: nowrap;
         opacity: 0.7;
+        transition: opacity 0.3s;
       }
 
       .celestial-body.active .label {
-        color: #ffffff;
         opacity: 1;
-        font-weight: 600;
-        text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
-      }
-
-      .selected-planet-note {
-        margin: -10px auto 10px;
-        color: #c7d6f5;
-        font-size: 0.95rem;
-        letter-spacing: 0.2px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
       }
 
       .audio-btn {
@@ -570,6 +566,9 @@
         max-width: 720px;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      .planet-content-wrapper.animating {
         animation: fadeIn 0.5s ease;
       }
 
@@ -911,53 +910,43 @@
       </div>
     </section>
 
-    <!-- PLANETS -->
-    <!-- ОБНОВЛЕННЫЙ РАЗДЕЛ ПЛАНЕТ -->
     <section class="planet-section container">
       <div class="glow-box compact" style="max-width: 760px; margin: 0 auto 30px;">
         <h2>Güneş Sistemi'ni Keşfet</h2>
         <p style="color: #a3b5d3; font-size: 0.9rem;">Gezegenlerin üzerine gelerek onları büyütün, detayları görmek için tıklayın.</p>
       </div>
 
-      <!-- Ряд с Солнцем и планетами -->
       <div class="space-system-row">
-        <!-- Солнце -->
-        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);" role="button" aria-pressed="true">
+        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);" role="button">
           <span class="label">Güneş</span>
         </div>
 
-        <!-- Планеты -->
-        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);" role="button">
           <span class="label">Merkür</span>
         </div>
-        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);" role="button">
           <span class="label">Venüs</span>
         </div>
-        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);" role="button">
           <span class="label">Dünya</span>
         </div>
-        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);" role="button">
           <span class="label">Mars</span>
         </div>
-        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);" role="button">
           <span class="label">Jüpiter</span>
         </div>
-        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);" role="button">
           <span class="label">Satürn</span>
         </div>
-        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);" role="button">
           <span class="label">Uranüs</span>
         </div>
-        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);" role="button">
           <span class="label">Neptün</span>
         </div>
       </div>
 
-      <div class="selected-planet-note" id="selectedPlanetLabel" aria-live="polite">
-        Seçilen: Güneş
-      </div>
-
-      <!-- Контент под планетами -->
       <div class="planet-content-wrapper" id="planetDetailBox">
         <div class="glow-box glow-strong">
           <h3 id="planetTitle">Güneş</h3>
@@ -1078,96 +1067,13 @@
           }
         });
       });
-      document.addEventListener("DOMContentLoaded", function () {
-        const spaceData = {
-            sun: {
-                title: "Güneş",
-                desc: "Güneş sisteminin merkezinde yer alan, devasa bir plazma küresidir. Tüm yaşamın enerji kaynağıdır."
-            },
-            mercury: {
-                title: "Merkür",
-                desc: "Güneş'e en yakın gezegen olan Merkür, küçük, kayalık ve atmosferi olmayan bir dünyadır."
-            },
-            venus: {
-                title: "Venüs",
-                desc: "Güneş sisteminin en sıcak gezegeni olan Venüs, kalın sülfürik asit bulutlarıyla kaplıdır."
-            },
-            earth: {
-                title: "Dünya",
-                desc: "Yaşamın olduğu bilinen tek gezegen. %71'i suyla kaplı mavi evimiz."
-            },
-            mars: {
-                title: "Mars",
-                desc: "'Kızıl Gezegen' olarak bilinir. İnce bir atmosferi ve devasa toz fırtınaları vardır."
-            },
-            jupiter: {
-                title: "Jüpiter",
-                desc: "En büyük gezegen. Bir gaz devi olup, meşhur 'Büyük Kırmızı Leke' fırtınasına ev sahipliği yapar."
-            },
-            saturn: {
-                title: "Satürn",
-                desc: "Görkemli halka sistemiyle bilinen, Güneş sisteminin ikinci büyük gaz devidir."
-            },
-            uranus: {
-                title: "Uranüs",
-                desc: "Yan yatmış bir eksende dönen, metan gazı nedeniyle mavi-yeşil görünen bir buz devidir."
-            },
-            neptune: {
-                title: "Neptün",
-                desc: "Güneş'e en uzak gezegen. Çok güçlü rüzgarların estiği, koyu mavi renkli bir dünyadır."
-            }
-        };
 
-        const bodies = document.querySelectorAll('.celestial-body');
-        const titleEl = document.getElementById('planetTitle');
-        const descEl = document.getElementById('planetDesc');
-        const detailBox = document.getElementById('planetDetailBox');
-        const selectionNote = document.getElementById('selectedPlanetLabel');
-
-        bodies.forEach(body => {
-            body.addEventListener('click', () => {
-                // Смена активного состояния
-                bodies.forEach(b => {
-                  b.classList.remove('active');
-                  b.setAttribute('aria-pressed', 'false');
-                });
-                body.classList.add('active');
-                body.setAttribute('aria-pressed', 'true');
-
-                // Обновление контента
-                const id = body.getAttribute('data-id');
-                const data = spaceData[id];
-
-                titleEl.textContent = data.title;
-                descEl.textContent = data.desc;
-                selectionNote.textContent = `Seçilen: ${data.title}`;
-
-                // Эффект появления текста
-                detailBox.style.animation = 'none';
-                detailBox.offsetHeight; /* trigger reflow */
-                detailBox.style.animation = 'fadeIn 0.5s ease';
-            });
+      // Optional: Button click handler
+      if(playBtn) {
+        playBtn.addEventListener('click', () => {
+          alert('Ses dosyası oynatılıyor... (Demo)');
         });
-        
-        // Логика кнопки аудио (заглушка)
-        document.getElementById('playAudioBtn').addEventListener('click', function() {
-            alert(titleEl.textContent + " hakkında sesli anlatım yakında eklenecek!");
-        });
-    });
-
-
-
-    <!-- Albamen Gallery (thumbs + desktop hover zoom + mobile fullscreen) -->
-    <script>
-      (function(){
-        const gallery = document.getElementById('albamenGallery');
-        if(!gallery) return;
-
-        const main = document.getElementById('albamenMain');
-        const mainImg = document.getElementById('albamenMainImg');
-        const thumbs = document.getElementById('albamenThumbs');
-        const lens = document.getElementById('albamenLens');
-        const zoom = document.getElementById('albamenZoom');
+      }
 
 
       // ===========================
@@ -1192,5 +1098,3 @@
     </script>
   </body>
 </html>
-
-
