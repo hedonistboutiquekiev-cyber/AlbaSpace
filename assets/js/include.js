@@ -196,12 +196,6 @@ runAfterDomReady(() => {
       <div class="ai-hero-avatar" id="ai-avatar-trigger">
         <img src="${avatarSrc}" alt="Albamen AI">
       </div>
-      <button class="ai-call-btn pulse" id="ai-call-trigger" aria-label="Call AI">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-             stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-        </svg>
-      </button>
     `;
     document.body.appendChild(floating);
 
@@ -209,12 +203,24 @@ runAfterDomReady(() => {
     panel.className = 'ai-panel-global';
     panel.innerHTML = `
       <div class="ai-panel-header">
+        <button class="ai-voice-btn" id="ai-voice-btn-panel" aria-label="Call AI">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+        </button>
         <button class="ai-close-icon" id="ai-close-btn">×</button>
       </div>
       <div class="ai-panel-body">
         <div class="ai-messages-list" id="ai-messages-list"></div>
         <div class="ai-chat-avatar-large"><img src="${avatarSrc}" alt="Albamen"></div>
         <div class="ai-status-text" id="ai-status-text">${strings.initialStatus}</div>
+        <div class="ai-status-text ai-voice-status" id="voice-status-text" style="display:none;">${strings.talkPrompt}</div>
+        <div class="voice-controls hidden" id="voice-inline-controls">
+          <div class="voice-wave hidden" id="voice-wave">
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+          </div>
+          <button class="voice-stop-btn hidden" id="voice-stop-btn">■</button>
+        </div>
         <div class="ai-input-area">
           <button class="ai-action-btn ai-mic-btn-panel" id="ai-mic-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
