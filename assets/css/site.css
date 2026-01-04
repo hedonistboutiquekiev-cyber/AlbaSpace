@@ -11,6 +11,12 @@
 body{
   margin:0;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+
+  /* Prevent pages from exceeding the device width on mobile */
+  width:100%;
+  max-width:100vw;
+  overflow-x:hidden;
+
   /*
    * Mobile Safari fix for stretched background
    *
