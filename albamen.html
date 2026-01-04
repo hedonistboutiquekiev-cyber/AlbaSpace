@@ -1,10 +1,3 @@
-<!--
-  Albamen Page (reworked)
-
-  - NO text glow (removed text-shadow on text)
-  - All text blocks are wrapped into semi-transparent glowing containers
-  - site.css подключён, чтобы header/footer выглядели как на остальных страницах
--->
 <!DOCTYPE html>
 <html lang="tr">
   <head>
@@ -12,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Albamen Uzay Keşfi</title>
 
-    <!-- Global site styles (header/footer) -->
     <link rel="stylesheet" href="/assets/css/site.css" />
 
     <style>
@@ -487,7 +479,7 @@
         margin: 0;
       }
 
-      /* Новые стили для интерактивного ряда */
+      /* Styles for interactive row */
       .space-system-row {
         display: flex;
         align-items: center;
@@ -519,33 +511,43 @@
         height: var(--body-size);
       }
 
-      /* Эффект при наведении */
+      /* Hover Effects */
       .celestial-body:hover {
         transform: scale(1.3) translateY(-20px);
         box-shadow: 0 15px 30px var(--glow-color), 0 0 40px var(--glow-color);
         z-index: 10;
       }
 
+      /* Active State (Selected) */
       .celestial-body.active {
-        outline: 2px solid rgba(255,255,255,0.5);
-        outline-offset: 5px;
-        box-shadow: 0 0 18px var(--glow-color), 0 0 40px var(--glow-color);
-        transform: scale(1.1);
+        outline: 3px solid rgba(255,255,255,0.8);
+        outline-offset: 6px;
+        box-shadow: 0 0 25px var(--glow-color), 0 0 50px var(--glow-color);
+        transform: scale(1.2);
+        z-index: 20;
       }
 
       .celestial-body.active:hover {
-        transform: scale(1.3) translateY(-20px);
+        transform: scale(1.3) translateY(-10px);
       }
 
       .celestial-body .label {
         position: absolute;
-        bottom: -25px;
+        bottom: -30px;
         left: 50%;
         transform: translateX(-50%);
-        font-size: 12px;
+        font-size: 13px;
+        font-weight: 600;
         color: #a3b5d3;
         white-space: nowrap;
         opacity: 0.7;
+        transition: opacity 0.3s;
+      }
+
+      .celestial-body.active .label {
+        opacity: 1;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
       }
 
       .audio-btn {
@@ -564,12 +566,11 @@
         max-width: 720px;
         margin-left: auto;
         margin-right: auto;
-        animation: fadeIn 0.5s ease;
       }
 
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      .planet-content-wrapper.animating {
+        animation: fadeIn 0.5s ease;
+      }
 
       @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -668,7 +669,6 @@
         }
       }
 
-
       .ai-placeholder{
         height:100%;
         border-radius:14px;
@@ -686,10 +686,8 @@
   </head>
 
   <body>
-    <!-- Header include placeholder -->
     <div data-include-html="/header-tr.html"></div>
 
-    <!-- HERO -->
     <section class="hero">
       <div class="hero-inner">
         <div class="glow-box glow-strong">
@@ -703,7 +701,6 @@
       </div>
     </section>
 
-    <!-- AI SECTION -->
     <section class="ai-section container">
       <div class="section-title">
         <div class="glow-box compact">
@@ -755,7 +752,6 @@
       </div>
     </section>
 
-    <!-- BOOK SECTION -->
     <section class="book-section container">
       <div class="image">
         <div class="product-gallery" id="albamenGallery">
@@ -793,11 +789,9 @@
             </button>
           </div>
 
-          <!-- Desktop zoom result panel -->
           <div class="zoom-result" id="albamenZoom" aria-hidden="true"></div>
         </div>
 
-        <!-- Mobile fullscreen viewer -->
         <div class="img-modal" id="albamenModal" aria-hidden="true">
           <button class="img-modal-close" type="button" id="albamenModalClose" aria-label="Kapat">×</button>
           <img id="albamenModalImg" alt="Albamen büyük görüntü" />
@@ -860,7 +854,6 @@
       </div>
     </section>
 
-    <!-- TIMELINE -->
     <section class="timeline-section container">
       <div class="glow-box compact" style="max-width: 820px; margin: 0 auto 18px;">
         <h2>Yıldızlara Uzanan Yolculuk</h2>
@@ -873,7 +866,7 @@
               <h3>2024 – İlk Türk Astronot</h3>
               <p>
                 Alper Gezeravci, Uluslararası Uzay İstasyonu'nda 13 bilimsel deney
-                gerçekleştirdi ve ülkemiz adına tarihe geçti.
+                gerçekleştirerek ülkemiz adına tarihe geçti.
               </p>
             </div>
           </div>
@@ -917,49 +910,43 @@
       </div>
     </section>
 
-    <!-- PLANETS -->
-    <!-- ОБНОВЛЕННЫЙ РАЗДЕЛ ПЛАНЕТ -->
     <section class="planet-section container">
       <div class="glow-box compact" style="max-width: 760px; margin: 0 auto 30px;">
         <h2>Güneş Sistemi'ni Keşfet</h2>
         <p style="color: #a3b5d3; font-size: 0.9rem;">Gezegenlerin üzerine gelerek onları büyütün, detayları görmek için tıklayın.</p>
       </div>
 
-      <!-- Ряд с Солнцем и планетами -->
       <div class="space-system-row">
-        <!-- Солнце -->
-        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);" role="button" aria-pressed="true">
+        <div class="celestial-body sun active" data-id="sun" style="--body-color: #ff4500; --glow-color: rgba(255, 69, 0, 0.6);" role="button">
           <span class="label">Güneş</span>
         </div>
 
-        <!-- Планеты -->
-        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="mercury" style="--body-size: 35px; --body-color: #97979f; --glow-color: rgba(151, 151, 159, 0.4);" role="button">
           <span class="label">Merkür</span>
         </div>
-        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="venus" style="--body-size: 45px; --body-color: #e3bb76; --glow-color: rgba(227, 187, 118, 0.4);" role="button">
           <span class="label">Venüs</span>
         </div>
-        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="earth" style="--body-size: 48px; --body-color: #2271b3; --glow-color: rgba(34, 113, 179, 0.5);" role="button">
           <span class="label">Dünya</span>
         </div>
-        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="mars" style="--body-size: 40px; --body-color: #e27b58; --glow-color: rgba(226, 123, 88, 0.4);" role="button">
           <span class="label">Mars</span>
         </div>
-        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="jupiter" style="--body-size: 75px; --body-color: #d39c7e; --glow-color: rgba(211, 156, 126, 0.3);" role="button">
           <span class="label">Jüpiter</span>
         </div>
-        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="saturn" style="--body-size: 65px; --body-color: #c5ab6e; --glow-color: rgba(197, 171, 110, 0.3);" role="button">
           <span class="label">Satürn</span>
         </div>
-        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="uranus" style="--body-size: 55px; --body-color: #b5e3e3; --glow-color: rgba(181, 227, 227, 0.4);" role="button">
           <span class="label">Uranüs</span>
         </div>
-        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);" role="button" aria-pressed="false">
+        <div class="celestial-body planet" data-id="neptune" style="--body-size: 53px; --body-color: #4b70dd; --glow-color: rgba(75, 112, 221, 0.4);" role="button">
           <span class="label">Neptün</span>
         </div>
       </div>
 
-      <!-- Контент под планетами -->
       <div class="planet-content-wrapper" id="planetDetailBox">
         <div class="glow-box glow-strong">
           <h3 id="planetTitle">Güneş</h3>
@@ -974,7 +961,6 @@
       </div>
     </section>
 
-    <!-- QUOTE & VALUES -->
     <section class="quote-section">
       <div class="glow-box glow-strong" style="max-width: 860px; margin: 0 auto;">
         <blockquote>"Gelecek, merak eden çocuklarla kurulur."</blockquote>
@@ -1005,267 +991,110 @@
       </div>
     </section>
 
-    <!-- Footer include placeholder -->
     <div data-include-html="/footer-tr.html"></div>
 
-    <!-- Include global include.js (for marking active nav, lang switch, etc.) -->
-    <script src="/assets/js/include.js" defer></script>
+    <script src="/assets/js/include.js"></script>
 
-    <!-- Include script to load header and footer fragments and restructure addresses -->
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const includes = document.querySelectorAll("[data-include-html]");
-        includes.forEach((el) => {
-          const url = el.getAttribute("data-include-html");
-          if (!url) return;
+      // ===========================
+      // 1. PLANET INTERACTION LOGIC
+      // ===========================
+      const planetData = {
+        sun: {
+          title: "Güneş",
+          desc: "Güneş sisteminin merkezinde yer alan, devasa bir plazma küresidir. Tüm yaşamın enerji kaynağıdır. Güneş olmasaydı, Dünya'da yaşam olmazdı."
+        },
+        mercury: {
+          title: "Merkür",
+          desc: "Güneş'e en yakın gezegendir. Yüzeyi kraterlerle doludur ve atmosferi çok incedir. Gündüzleri çok sıcak, geceleri ise dondurucu soğuktur."
+        },
+        venus: {
+          title: "Venüs",
+          desc: "Gökyüzündeki en parlak gezegendir. Kalın atmosferi ısıyı tuttuğu için Güneş sisteminin en sıcak gezegenidir. Diğer gezegenlerin aksine ters yöne döner."
+        },
+        earth: {
+          title: "Dünya",
+          desc: "Bizim evimiz! Üzerinde yaşam olduğu bilinen tek gezegendir. Yüzeyinin büyük bir kısmı sularla kaplıdır ve yaşamı koruyan bir atmosferi vardır."
+        },
+        mars: {
+          title: "Mars",
+          desc: "Kızıl Gezegen olarak bilinir. Rengini demir oksitli toprağından alır. Güneş sistemindeki en büyük volkan olan Olympos Mons burada bulunur."
+        },
+        jupiter: {
+          title: "Jüpiter",
+          desc: "Güneş sisteminin en büyük gezegenidir. Gaz devidir ve sert bir yüzeyi yoktur. Üzerindeki 'Büyük Kırmızı Leke' aslında devasa bir fırtınadır."
+        },
+        saturn: {
+          title: "Satürn",
+          desc: "Etrafındaki muhteşem halkalarıyla ünlüdür. Bu halkalar buz ve kaya parçalarından oluşur. Jüpiter'den sonraki en büyük ikinci gezegendir."
+        },
+        uranus: {
+          title: "Uranüs",
+          desc: "Buz devi olarak sınıflandırılır. Atmosferindeki metan gazı ona mavi-yeşil bir renk verir. Güneş etrafında yan yatmış bir varil gibi döner."
+        },
+        neptune: {
+          title: "Neptün",
+          desc: "Güneş'e en uzak gezegendir. Çok soğuktur ve çok şiddetli rüzgarlar eser. Koyu mavi rengiyle derin okyanusları andırır."
+        }
+      };
 
-          fetch(url)
-            .then((res) => (res.ok ? res.text() : ""))
-            .then((html) => {
-              el.innerHTML = html;
+      const planets = document.querySelectorAll('.celestial-body');
+      const titleEl = document.getElementById('planetTitle');
+      const descEl = document.getElementById('planetDesc');
+      const detailBox = document.getElementById('planetDetailBox');
+      const playBtn = document.getElementById('playAudioBtn');
 
-              // If header was inserted, attempt to mark active nav and setup language switch
-              if (url.includes("header")) {
-                try {
-                  if (window.markActiveNav) window.markActiveNav();
-                  if (window.setupLangSwitch) window.setupLangSwitch();
-                } catch (e) { /* ignore */ }
-              }
+      planets.forEach(planet => {
+        planet.addEventListener('click', function() {
+          // 1. Remove active class from all
+          planets.forEach(p => p.classList.remove('active'));
 
-              // After inserting footer, restructure address blocks for better layout
-              if (url.includes("footer")) {
-                try {
-                  const addr = el.querySelector(".footer-address");
-                  if (addr) {
-                    const paragraphs = Array.from(addr.querySelectorAll("p"));
-                    const blocks = [];
-                    let current = [];
+          // 2. Add active class to clicked
+          this.classList.add('active');
 
-                    paragraphs.forEach((p) => {
-                      const text = (p.textContent || "").trim();
-                      if (text.startsWith("Merkez Ofis") || text.startsWith("Adana Şube")) {
-                        if (current.length) blocks.push(current);
-                        current = [p];
-                      } else {
-                        current.push(p);
-                      }
-                    });
+          // 3. Update Text
+          const id = this.getAttribute('data-id');
+          const data = planetData[id];
 
-                    if (current.length) blocks.push(current);
+          if (data) {
+            // Simple fade effect
+            detailBox.classList.remove('animating');
+            void detailBox.offsetWidth; // trigger reflow
+            detailBox.classList.add('animating');
 
-                    addr.innerHTML = "";
-                    blocks.forEach((block) => {
-                      const div = document.createElement("div");
-                      div.className = "address-block";
-                      block.forEach((p) => div.appendChild(p));
-                      addr.appendChild(div);
-                    });
-                  }
-                } catch (e) {
-                  console.warn("Could not restructure footer addresses", e);
-                }
-              }
-            })
-            .catch((err) => console.error("Include failed for", url, err));
+            titleEl.textContent = data.title;
+            descEl.textContent = data.desc;
+          }
         });
       });
-      document.addEventListener("DOMContentLoaded", function () {
-        const spaceData = {
-            sun: {
-                title: "Güneş",
-                desc: "Güneş sisteminin merkezinde yer alan, devasa bir plazma küresidir. Tüm yaşamın enerji kaynağıdır."
-            },
-            mercury: {
-                title: "Merkür",
-                desc: "Güneş'e en yakın gezegen olan Merkür, küçük, kayalık ve atmosferi olmayan bir dünyadır."
-            },
-            venus: {
-                title: "Venüs",
-                desc: "Güneş sisteminin en sıcak gezegeni olan Venüs, kalın sülfürik asit bulutlarıyla kaplıdır."
-            },
-            earth: {
-                title: "Dünya",
-                desc: "Yaşamın olduğu bilinen tek gezegen. %71'i suyla kaplı mavi evimiz."
-            },
-            mars: {
-                title: "Mars",
-                desc: "'Kızıl Gezegen' olarak bilinir. İnce bir atmosferi ve devasa toz fırtınaları vardır."
-            },
-            jupiter: {
-                title: "Jüpiter",
-                desc: "En büyük gezegen. Bir gaz devi olup, meşhur 'Büyük Kırmızı Leke' fırtınasına ev sahipliği yapar."
-            },
-            saturn: {
-                title: "Satürn",
-                desc: "Görkemli halka sistemiyle bilinen, Güneş sisteminin ikinci büyük gaz devidir."
-            },
-            uranus: {
-                title: "Uranüs",
-                desc: "Yan yatmış bir eksende dönen, metan gazı nedeniyle mavi-yeşil görünen bir buz devidir."
-            },
-            neptune: {
-                title: "Neptün",
-                desc: "Güneş'e en uzak gezegen. Çok güçlü rüzgarların estiği, koyu mavi renkli bir dünyadır."
-            }
-        };
 
-        const bodies = document.querySelectorAll('.celestial-body');
-        const titleEl = document.getElementById('planetTitle');
-        const descEl = document.getElementById('planetDesc');
-        const detailBox = document.getElementById('planetDetailBox');
-
-        bodies.forEach(body => {
-            body.addEventListener('click', () => {
-                // Смена активного состояния
-                bodies.forEach(b => {
-                  b.classList.remove('active');
-                  b.setAttribute('aria-pressed', 'false');
-                });
-                body.classList.add('active');
-                body.setAttribute('aria-pressed', 'true');
-
-                // Обновление контента
-                const id = body.getAttribute('data-id');
-                const data = spaceData[id];
-                
-                titleEl.textContent = data.title;
-                descEl.textContent = data.desc;
-
-                // Эффект появления текста
-                detailBox.style.animation = 'none';
-                detailBox.offsetHeight; /* trigger reflow */
-                detailBox.style.animation = 'fadeIn 0.5s ease';
-            });
+      // Optional: Button click handler
+      if(playBtn) {
+        playBtn.addEventListener('click', () => {
+          alert('Ses dosyası oynatılıyor... (Demo)');
         });
-        
-        // Логика кнопки аудио (заглушка)
-        document.getElementById('playAudioBtn').addEventListener('click', function() {
-            alert(titleEl.textContent + " hakkında sesli anlatım yakında eklenecek!");
-        });
-    });
+      }
 
 
+      // ===========================
+      // 2. BOOK GALLERY LOGIC (Simple)
+      // ===========================
+      const thumbs = document.querySelectorAll('.thumb');
+      const mainImg = document.getElementById('albamenMainImg');
 
-    <!-- Albamen Gallery (thumbs + desktop hover zoom + mobile fullscreen) -->
-    <script>
-      (function(){
-        const gallery = document.getElementById('albamenGallery');
-        if(!gallery) return;
+      thumbs.forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          // Update active state
+          thumbs.forEach(t => t.classList.remove('is-active'));
+          this.classList.add('is-active');
 
-        const main = document.getElementById('albamenMain');
-        const mainImg = document.getElementById('albamenMainImg');
-        const thumbs = document.getElementById('albamenThumbs');
-        const lens = document.getElementById('albamenLens');
-        const zoom = document.getElementById('albamenZoom');
-
-        const modal = document.getElementById('albamenModal');
-        const modalImg = document.getElementById('albamenModalImg');
-        const modalClose = document.getElementById('albamenModalClose');
-
-        const isDesktop = () => matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-        function setActiveThumb(src){
-          const btns = thumbs.querySelectorAll('.thumb');
-          btns.forEach(b => b.classList.toggle('is-active', b.dataset.src === src));
-        }
-
-        function setMainImage(src){
-          mainImg.src = src;
-          mainImg.dataset.zoomSrc = src;
-          setActiveThumb(src);
-
-          if(zoom){
-            zoom.style.backgroundImage = `url("${src}")`;
-            zoom.style.backgroundPosition = '50% 50%';
+          // Update main image
+          const newSrc = this.getAttribute('data-src');
+          if(mainImg && newSrc) {
+             mainImg.src = newSrc;
           }
-        }
-
-        thumbs?.addEventListener('click', (e) => {
-          const btn = e.target.closest('.thumb');
-          if(!btn) return;
-          const src = btn.dataset.src;
-          if(src) setMainImage(src);
         });
-
-        function getCursorPos(ev){
-          const rect = main.getBoundingClientRect();
-          const cx = (ev.touches ? ev.touches[0].clientX : ev.clientX);
-          const cy = (ev.touches ? ev.touches[0].clientY : ev.clientY);
-          const x = cx - rect.left;
-          const y = cy - rect.top;
-          return { x, y, w: rect.width, h: rect.height };
-        }
-
-        function moveMagnifier(ev){
-          if(!isDesktop()) return;
-          if(!lens || !zoom) return;
-
-          const pos = getCursorPos(ev);
-          const lensW = lens.offsetWidth;
-          const lensH = lens.offsetHeight;
-
-          let x = pos.x - lensW / 2;
-          let y = pos.y - lensH / 2;
-
-          x = Math.max(0, Math.min(x, pos.w - lensW));
-          y = Math.max(0, Math.min(y, pos.h - lensH));
-
-          lens.style.left = x + 'px';
-          lens.style.top  = y + 'px';
-
-          const fx = (x + lensW / 2) / pos.w * 100;
-          const fy = (y + lensH / 2) / pos.h * 100;
-
-          zoom.style.backgroundImage = `url("${mainImg.dataset.zoomSrc || mainImg.src}")`;
-          zoom.style.backgroundPosition = `${fx}% ${fy}%`;
-        }
-
-        function enableMagnifier(){
-          if(!lens || !zoom) return;
-
-          main.addEventListener('mousemove', moveMagnifier);
-          main.addEventListener('mouseenter', () => {
-            if(!isDesktop()) return;
-            lens.style.opacity = '1';
-            zoom.style.opacity = '1';
-          });
-          main.addEventListener('mouseleave', () => {
-            if(!isDesktop()) return;
-            lens.style.opacity = '0';
-            zoom.style.opacity = '1';
-            zoom.style.backgroundPosition = '50% 50%';
-          });
-        }
-
-        enableMagnifier();
-
-        // Mobile tap to fullscreen
-        function openModal(){
-          modalImg.src = mainImg.src;
-          modal.classList.add('open');
-          modal.setAttribute('aria-hidden', 'false');
-          document.body.style.overflow = 'hidden';
-        }
-        function closeModal(){
-          modal.classList.remove('open');
-          modal.setAttribute('aria-hidden', 'true');
-          document.body.style.overflow = '';
-        }
-
-        main.addEventListener('click', () => {
-          if(isDesktop()) return;
-          openModal();
-        });
-
-        modalClose.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
-        document.addEventListener('keydown', (e) => {
-          if(e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-        });
-
-        // Init
-        setMainImage(mainImg.src);
-      })();
+      });
     </script>
   </body>
 </html>
