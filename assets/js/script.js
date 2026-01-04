@@ -58,9 +58,18 @@ const closeBtn = voiceModal?.querySelector('.ai-close-icon'); // кнопка з
 const statusEl = document.getElementById('voice-status-text');
 const waveEl = document.getElementById('voice-wave');
 const stopBtn = document.getElementById('voice-stop-btn');
+const inlineControls = document.getElementById('voice-inline-controls');
 
-function setStatus(text) {
-  if (statusEl) statusEl.textContent = text;
+function showVoiceUi(show) {
+  if (statusEl) statusEl.style.display = show ? 'block' : 'none';
+  inlineControls?.classList.toggle('hidden', !show);
+}
+
+function setStatus(text, ensureVisible = true) {
+  if (statusEl) {
+    statusEl.textContent = text;
+    if (ensureVisible) statusEl.style.display = 'block';
+  }
 }
 
 function toggleListening(on) {
@@ -121,10 +130,16 @@ if (voiceButtons.length && voiceModal) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setStatus('Ses desteği yok');
+      showVoiceUi(true);
       return;
     }
 
-    voiceModal.classList.add('ai-open');
+    if (voiceModal) {
+      voiceModal.classList.add('ai-open');
+    } else if (chatPanel) {
+      chatPanel.classList.add('ai-open');
+    }
+    showVoiceUi(true);
     if (recognition) recognition.stop();
 
     recognition = new SpeechRecognition();
