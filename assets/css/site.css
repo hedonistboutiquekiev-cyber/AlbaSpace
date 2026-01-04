@@ -884,6 +884,18 @@ footer.footer{
   align-items:start;
 }
 
+.footer-actions--contact{
+  justify-items:center;
+  text-align:center;
+  justify-self:center;
+}
+
+.footer-actions--offices{
+  justify-items:end;
+  text-align:right;
+  justify-self:end;
+}
+
 .footer-action{
   display:block;
   padding:10px 12px;
@@ -928,6 +940,12 @@ footer.footer{
     gap:10px;
   }
   .footer-action{ padding:14px 16px; text-align:center }
+  .footer-actions--contact,
+  .footer-actions--offices{
+    justify-items:center;
+    text-align:center;
+    justify-self:center;
+  }
   .footer-action__title{ font-size:13px }
   .footer-action__value{ font-size:15px }
 
