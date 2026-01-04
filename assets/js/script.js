@@ -50,7 +50,7 @@ function refreshVoiceIdentity() {
 //
 // Кнопка вызова голосового чата
 //
-const voiceBtn = document.getElementById('ai-voice-btn-panel') || document.querySelector('.ai-voice-btn') || document.querySelector('.ai-call-btn');
+const voiceButtons = document.querySelectorAll('#ai-voice-btn, #ai-voice-btn-panel, .ai-voice-btn, .ai-call-btn');
 const voiceModal = document.querySelector('.ai-panel-voice'); // модальное окно (если есть)
 const chatPanel = document.querySelector('.ai-panel-global');
 const avatarImg = (voiceModal || chatPanel)?.querySelector('.ai-chat-avatar-large img'); // аватар для свечения
@@ -58,9 +58,18 @@ const closeBtn = voiceModal?.querySelector('.ai-close-icon'); // кнопка з
 const statusEl = document.getElementById('voice-status-text');
 const waveEl = document.getElementById('voice-wave');
 const stopBtn = document.getElementById('voice-stop-btn');
+const inlineControls = document.getElementById('voice-inline-controls');
 
-function setStatus(text) {
-  if (statusEl) statusEl.textContent = text;
+function showVoiceUi(show) {
+  if (statusEl) statusEl.style.display = show ? 'block' : 'none';
+  inlineControls?.classList.toggle('hidden', !show);
+}
+
+function setStatus(text, ensureVisible = true) {
+  if (statusEl) {
+    statusEl.textContent = text;
+    if (ensureVisible) statusEl.style.display = 'block';
+  }
 }
 
 function toggleListening(on) {
@@ -116,15 +125,21 @@ function speakReply(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-if (voiceBtn && voiceModal) {
-  voiceBtn.addEventListener('click', () => {
+if (voiceButtons.length) {
+  voiceButtons.forEach((btn) => btn.addEventListener('click', () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setStatus('Ses desteği yok');
+      showVoiceUi(true);
       return;
     }
 
-    voiceModal.classList.add('ai-open');
+    if (voiceModal) {
+      voiceModal.classList.add('ai-open');
+    } else if (chatPanel) {
+      chatPanel.classList.add('ai-open');
+    }
+    showVoiceUi(true);
     if (recognition) recognition.stop();
 
     recognition = new SpeechRecognition();
@@ -154,7 +169,7 @@ if (voiceBtn && voiceModal) {
     };
 
     recognition.start();
-  });
+  }));
 }
 
 // Закрытие модалки
