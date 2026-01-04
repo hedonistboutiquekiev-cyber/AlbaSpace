@@ -55,31 +55,12 @@ const voiceModal = document.querySelector('.ai-panel-voice'); // модальн�
 const chatPanel = document.querySelector('.ai-panel-global');
 const avatarImg = (voiceModal || chatPanel)?.querySelector('.ai-chat-avatar-large img'); // аватар для свечения
 const closeBtn = voiceModal?.querySelector('.ai-close-icon'); // кнопка закрытия (X)
-const statusEl = document.getElementById('voice-status-text') || document.getElementById('ai-status-text');
-const inlineControls = document.getElementById('voice-inline-controls');
-const chatStatusEl = document.getElementById('ai-status-text');
+const statusEl = document.getElementById('voice-status-text');
 const waveEl = document.getElementById('voice-wave');
 const stopBtn = document.getElementById('voice-stop-btn');
 
-function enterVoiceMode() {
-  chatPanel?.classList.add('voice-active');
-  inlineControls?.classList.remove('hidden');
-  if (chatStatusEl) chatStatusEl.style.display = 'none';
-  if (statusEl) statusEl.style.display = 'block';
-}
-
-function exitVoiceMode() {
-  chatPanel?.classList.remove('voice-active');
-  inlineControls?.classList.add('hidden');
-  waveEl?.classList.add('hidden');
-  stopBtn?.classList.add('hidden');
-  if (chatStatusEl) chatStatusEl.style.display = '';
-  if (statusEl && statusEl.id === 'voice-status-text') statusEl.style.display = 'none';
-}
-
 function setStatus(text) {
   if (statusEl) statusEl.textContent = text;
-  if (!statusEl && chatStatusEl) chatStatusEl.textContent = text;
 }
 
 function toggleListening(on) {
@@ -114,17 +95,11 @@ async function sendTextToWorker(transcript) {
     refreshVoiceIdentity();
 
     const reply = (data.reply || '').trim();
-    if (reply) {
-      speakReply(reply);
-    }
+    if (reply) speakReply(reply);
     setStatus(reply || 'Albamen şu anda cevap veremiyor.');
-    if (!('speechSynthesis' in window)) {
-      exitVoiceMode();
-    }
   } catch (err) {
     console.error('Voice worker error:', err);
     setStatus('Bağlantı hatası, lütfen tekrar deneyin.');
-    exitVoiceMode();
   }
 }
 
@@ -137,12 +112,11 @@ function speakReply(text) {
   };
   utterance.onend = () => {
     if (avatarImg) avatarImg.classList.remove('ai-glow');
-    exitVoiceMode();
   };
   window.speechSynthesis.speak(utterance);
 }
 
-if (voiceBtn) {
+if (voiceBtn && voiceModal) {
   voiceBtn.addEventListener('click', () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -150,8 +124,7 @@ if (voiceBtn) {
       return;
     }
 
-    if (voiceModal) voiceModal.classList.add('ai-open');
-    enterVoiceMode();
+    voiceModal.classList.add('ai-open');
     if (recognition) recognition.stop();
 
     recognition = new SpeechRecognition();
@@ -167,7 +140,6 @@ if (voiceBtn) {
     recognition.onerror = (event) => {
       toggleListening(false);
       setStatus(event.error === 'no-speech' ? 'Ses algılanmadı' : 'Ses hatası');
-      exitVoiceMode();
     };
 
     recognition.onresult = (event) => {
@@ -179,7 +151,6 @@ if (voiceBtn) {
 
     recognition.onend = () => {
       toggleListening(false);
-      if (!isListening) exitVoiceMode();
     };
 
     recognition.start();
@@ -192,7 +163,6 @@ if (closeBtn) {
     voiceModal.classList.remove('ai-open');
     if (recognition && isListening) recognition.stop();
     toggleListening(false);
-    exitVoiceMode();
   });
 }
 
@@ -201,6 +171,5 @@ if (stopBtn) {
     if (recognition && isListening) recognition.stop();
     toggleListening(false);
     setStatus('Durduruldu');
-    exitVoiceMode();
   });
 }
