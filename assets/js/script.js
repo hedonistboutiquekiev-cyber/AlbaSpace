@@ -125,7 +125,7 @@ function speakReply(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-if (voiceButtons.length) {
+if (voiceButtons.length && voiceModal) {
   voiceButtons.forEach((btn) => btn.addEventListener('click', () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {

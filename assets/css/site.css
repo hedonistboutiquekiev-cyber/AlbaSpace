@@ -35,6 +35,11 @@ body{
    */
 }
 
+/* Apply border-box sizing everywhere to keep padded blocks within the viewport */
+*,*::before,*::after{
+  box-sizing:border-box;
+}
+
 /* Fix background attachment on mobile devices */
 @media (max-width: 767px) {
   body {
