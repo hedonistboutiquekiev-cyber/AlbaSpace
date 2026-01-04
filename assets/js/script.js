@@ -50,7 +50,7 @@ function refreshVoiceIdentity() {
 //
 // Кнопка вызова голосового чата
 //
-const voiceBtn = document.getElementById('ai-voice-btn-panel') || document.querySelector('.ai-voice-btn') || document.querySelector('.ai-call-btn');
+const voiceButtons = document.querySelectorAll('#ai-voice-btn, #ai-voice-btn-panel, .ai-voice-btn, .ai-call-btn');
 const voiceModal = document.querySelector('.ai-panel-voice'); // модальное окно (если есть)
 const chatPanel = document.querySelector('.ai-panel-global');
 const avatarImg = (voiceModal || chatPanel)?.querySelector('.ai-chat-avatar-large img'); // аватар для свечения
@@ -116,8 +116,8 @@ function speakReply(text) {
   window.speechSynthesis.speak(utterance);
 }
 
-if (voiceBtn && voiceModal) {
-  voiceBtn.addEventListener('click', () => {
+if (voiceButtons.length && voiceModal) {
+  voiceButtons.forEach((btn) => btn.addEventListener('click', () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setStatus('Ses desteği yok');
@@ -154,7 +154,7 @@ if (voiceBtn && voiceModal) {
     };
 
     recognition.start();
-  });
+  }));
 }
 
 // Закрытие модалки
