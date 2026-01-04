@@ -216,6 +216,28 @@
       background: #29d2ff;
     }
 
+    /* ===== Scroll reveal animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      filter: blur(6px);
+      transition: transform 0.65s cubic-bezier(0.19, 1, 0.22, 1),
+                  opacity 0.65s ease,
+                  filter 0.65s ease;
+      will-change: transform, opacity;
+    }
+
+    .reveal[data-direction="left"] { transform: translateX(-70px); }
+    .reveal[data-direction="right"] { transform: translateX(70px); }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateX(0);
+      filter: none;
+    }
+
+    .reveal { transition-delay: var(--reveal-delay, 0s); }
+
     /* ===== Logo carousels (FIXED: big logos, minimal equal gaps) ===== */
     .logo-section-title {
       text-align: center;
@@ -313,7 +335,7 @@
 
     <!-- HERO -->
     <section class="hero">
-      <div class="glass-box">
+      <div class="glass-box reveal" data-direction="left">
         <h1>Geleceğinizi Uzaya Taşıyın!</h1>
         <p class="lead">
           Markanızı uzaya gönderiyoruz! Uzay temalı reklam ve eğitim çözümlerimizle,
@@ -326,25 +348,25 @@
         </div>
 
         <div class="hero-stats">
-          <div>
+          <div class="reveal" data-direction="left">
             <strong>150+</strong>
             Yenilikçi Çözümler
           </div>
-          <div>
+          <div class="reveal" data-direction="right">
             <strong>15</strong>
             Uzay İlgili Başarı
           </div>
         </div>
       </div>
 
-      <div class="hero-image">
+      <div class="hero-image reveal" data-direction="right">
         <img src="/assets/images/anasayfa-hero.jpg" alt="Uzay ufku ve uydu görüntüsü">
       </div>
     </section>
 
     <!-- CATEGORIES -->
     <section>
-      <div class="glass-box glass-box--fit">
+      <div class="glass-box glass-box--fit reveal" data-direction="left">
         <h2 class="section-title">Ürün Kategorileri</h2>
         <p class="section-subtitle">
           Uzayda markanızı tanıtmak için yenilikçi çözümler sunuyoruz.
@@ -352,7 +374,7 @@
       </div>
 
       <div class="card-container">
-        <div class="category-card">
+        <div class="category-card reveal" data-direction="left">
           <img src="/assets/images/urun-uzay-tanitimi.jpg" alt="Uzay tanıtımı">
           <div class="category-body">
             <h3>Uzay Tanıtımı</h3>
@@ -361,7 +383,7 @@
           </div>
         </div>
 
-        <div class="category-card">
+        <div class="category-card reveal" data-direction="right">
           <img src="/assets/images/urun-uzay-reklamlari.jpg" alt="Uzay reklamları">
           <div class="category-body">
             <h3>Uzay Reklamları</h3>
@@ -374,11 +396,11 @@
 
     <!-- REFERENCES -->
     <section>
-      <div class="glass-box glass-box--fit">
+      <div class="glass-box glass-box--fit reveal" data-direction="right">
         <h2 class="logo-section-title">Referanslarımız</h2>
       </div>
 
-      <div class="logo-carousel-wrap">
+      <div class="logo-carousel-wrap reveal" data-direction="left">
         <div class="logo-carousel">
           <div class="carousel-track">
             <div class="logo-card"><img src="/assets/images/placeholder-logo1.jpg" alt="Logo placeholder"></div>
@@ -421,11 +443,11 @@
 
     <!-- PARTNERS -->
     <section>
-      <div class="glass-box glass-box--fit">
+      <div class="glass-box glass-box--fit reveal" data-direction="left">
         <h2 class="logo-section-title">Çözüm Ortaklarımız</h2>
       </div>
 
-      <div class="logo-carousel-wrap">
+      <div class="logo-carousel-wrap reveal" data-direction="right">
         <div class="logo-carousel">
           <div class="carousel-track">
             <div class="logo-card"><img src="/assets/images/placeholder-logo27.jpg" alt="Logo placeholder"></div>
@@ -450,5 +472,27 @@
   </main>
 
   <div data-include="/footer-tr.html"></div>
+
+  <script>
+    const revealItems = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.18,
+      rootMargin: '0px 0px -8% 0px'
+    });
+
+    revealItems.forEach((item, index) => {
+      const delay = item.dataset.direction === 'left' ? index * 0.025 : index * 0.03;
+      item.style.setProperty('--reveal-delay', `${delay}s`);
+      observer.observe(item);
+    });
+  </script>
 </body>
 </html>
