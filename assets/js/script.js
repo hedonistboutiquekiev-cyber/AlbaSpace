@@ -50,9 +50,10 @@ function refreshVoiceIdentity() {
 //
 // Кнопка вызова голосового чата
 //
-const voiceBtn = document.querySelector('.ai-voice-btn') || document.querySelector('.ai-call-btn');
-const voiceModal = document.querySelector('.ai-panel-voice'); // модальное окно
-const avatarImg = voiceModal?.querySelector('.ai-chat-avatar-large img'); // аватар для свечения
+const voiceBtn = document.getElementById('ai-voice-btn-panel') || document.querySelector('.ai-voice-btn') || document.querySelector('.ai-call-btn');
+const voiceModal = document.querySelector('.ai-panel-voice'); // модальное окно (если есть)
+const chatPanel = document.querySelector('.ai-panel-global');
+const avatarImg = (voiceModal || chatPanel)?.querySelector('.ai-chat-avatar-large img'); // аватар для свечения
 const closeBtn = voiceModal?.querySelector('.ai-close-icon'); // кнопка закрытия (X)
 const statusEl = document.getElementById('voice-status-text');
 const waveEl = document.getElementById('voice-wave');
