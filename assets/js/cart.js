@@ -151,36 +151,55 @@
     remove
   };
 
-  // Update badges when the page loads
-  // When the document loads, update cart badges and inject the cart icon into
-  // the header if it hasn't been added yet.  The site header is loaded via
-  // include.js, so we wait until DOMContentLoaded to find it.  The cart link
-  // is appended to the element with class `.header-social`, which contains
-  // existing social icons.  We compute the link destination based on the
-  // current page language: for pages with `lang="tr"` we link to the
-  // Turkish cart page (/tr/cart.html); otherwise we link to the English
-  // cart page (/eng/cart.html).
+  /**
+   * Ensure the cart icon exists inside the header-social container.  The site
+   * header is injected dynamically via include.js, so we may need to wait for
+   * the fragment to appear before appending the icon.
+   *
+   * @returns {boolean} True if the icon is present after this call.
+   */
+  function ensureCartIcon() {
+    const headerSocial = document.querySelector('.header-social');
+    if (!headerSocial) return false;
+
+    if (headerSocial.querySelector('.header-cart-link')) return true;
+
+    const link = document.createElement('a');
+    link.href = '/cart.html';
+    link.className = 'header-cart-link';
+    link.innerHTML =
+      `<span class="header-cart-icon" style="position:relative;display:inline-block;">`
+        +
+        `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">`
+          +
+          `<path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 .99 1.14l-1.6 11A2 2 0 0 1 16.41 21H7.59a2 2 0 0 1-1.98-1.86l-1.6-11A1 1 0 0 1 4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z" fill="currentColor"></path>`
+        +
+        `</svg>`
+        +
+        `<span class="header-cart-count" data-cart-count style="position:absolute;top:-6px;right:-8px;min-width:16px;padding:1px 4px;border-radius:999px;background:var(--accent, #00c2ff);color:var(--header-bg, #020617);font-size:11px;font-weight:600;line-height:1.2;text-align:center;">`
+          +
+          `0`
+        +
+        `</span>`
+      +
+      `</span>`;
+
+    headerSocial.appendChild(link);
+    return true;
+  }
+
+  // Update badges when the page loads. Also ensure the cart icon is injected
+  // even if the header HTML is added asynchronously by include.js.
   document.addEventListener('DOMContentLoaded', () => {
     updateBadge();
     try {
-      const headerSocial = document.querySelector('.header-social');
-      if (headerSocial && !headerSocial.querySelector('.header-cart-link')) {
-        const lang = document.documentElement.lang || 'en';
-        const cartUrl = lang.toLowerCase().startsWith('tr') ? '/tr/cart.html' : '/eng/cart.html';
-        const link = document.createElement('a');
-        link.href = cartUrl;
-        link.className = 'header-cart-link';
-        // build inner HTML with SVG icon and badge
-        link.innerHTML =
-          `<span class="header-cart-icon" style="position:relative;display:inline-block;">
-            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-              <path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 .99 1.14l-1.6 11A2 2 0 0 1 16.41 21H7.59a2 2 0 0 1-1.98-1.86l-1.6-11A1 1 0 0 1 4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z" fill="currentColor"></path>
-            </svg>
-            <span class="header-cart-count" data-cart-count style="position:absolute;top:-6px;right:-8px;min-width:16px;padding:1px 4px;border-radius:999px;background:var(--accent, #00c2ff);color:var(--header-bg, #020617);font-size:11px;font-weight:600;line-height:1.2;text-align:center;">
-              0
-            </span>
-          </span>`;
-        headerSocial.appendChild(link);
+      if (!ensureCartIcon()) {
+        const observer = new MutationObserver(() => {
+          if (ensureCartIcon()) {
+            observer.disconnect();
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
       }
     } catch (err) {
       console.warn('Cart icon injection failed:', err);

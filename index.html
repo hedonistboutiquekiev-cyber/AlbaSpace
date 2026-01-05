@@ -216,6 +216,28 @@
       background: #29d2ff;
     }
 
+    /* ===== Scroll reveal animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      filter: blur(6px);
+      transition: transform 0.65s cubic-bezier(0.19, 1, 0.22, 1),
+                  opacity 0.65s ease,
+                  filter 0.65s ease;
+      will-change: transform, opacity;
+    }
+
+    .reveal[data-direction="left"] { transform: translateX(-70px); }
+    .reveal[data-direction="right"] { transform: translateX(70px); }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateX(0);
+      filter: none;
+    }
+
+    .reveal { transition-delay: var(--reveal-delay, 0s); }
+
     /* ===== Logo carousels (FIXED: big logos, minimal equal gaps) ===== */
     .logo-section-title {
       text-align: center;
@@ -451,5 +473,26 @@
 
   <div data-include="/footer-tr.html"></div>
 
+  <script>
+    const revealItems = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.18,
+      rootMargin: '0px 0px -8% 0px'
+    });
+
+    revealItems.forEach((item, index) => {
+      const delay = item.dataset.direction === 'left' ? index * 0.025 : index * 0.03;
+      item.style.setProperty('--reveal-delay', `${delay}s`);
+      observer.observe(item);
+    });
+  </script>
 </body>
 </html>
