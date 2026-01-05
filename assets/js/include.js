@@ -557,9 +557,21 @@ function initScrollReveal() {
   });
 
   const selectors = [
+    // Explicit opts-in
     '[data-reveal]',
     '.reveal',
+
+    // Common layout containers across legacy pages
+    'body > *:not(script):not(style):not(link):not(meta)',
     'main > *:not(script):not(style)',
+    '.container',
+    '.row',
+    '.col',
+    '.section',
+    '.content',
+    '.wrapper',
+
+    // Semantically meaningful blocks
     'section',
     'article',
     '.card',
