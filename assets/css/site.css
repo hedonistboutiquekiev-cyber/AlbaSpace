@@ -70,6 +70,31 @@ body{
 }
 
 /* =========================
+   Scroll reveal animations
+   (used across all pages)
+   ========================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(6px);
+  transition: transform 1.3s cubic-bezier(0.19, 1, 0.22, 1),
+              opacity 1.3s ease,
+              filter 1.3s ease;
+  will-change: transform, opacity;
+}
+
+.reveal[data-direction="left"] { transform: translateX(-70px); }
+.reveal[data-direction="right"] { transform: translateX(70px); }
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+  filter: none;
+}
+
+.reveal { transition-delay: var(--reveal-delay, 0s); }
+
+/* =========================
    HEADER
    ========================= */
 

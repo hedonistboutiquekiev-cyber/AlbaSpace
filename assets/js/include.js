@@ -153,6 +153,8 @@ runAfterDomReady(() => {
   ensureAiWidgetPinned();
   // 8. Голосовой виджет — кнопка + модалка + подключение script.js
   injectVoiceWidget();
+  // 9. Плавное появление блоков на всех страницах
+  initScrollReveal();
 
   // --- Текстовый чат Albamen (старый UI, новая схема с памятью) ---
   function injectAiWidget() {
@@ -533,6 +535,79 @@ function runAfterDomReady(fn) {
   } else {
     fn();
   }
+}
+
+function initScrollReveal() {
+  if (window.__albaRevealReady) return;
+  window.__albaRevealReady = true;
+
+  const processed = new WeakSet();
+  let revealIndex = 0;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        obs.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.18,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  const selectors = [
+    '[data-reveal]',
+    '.reveal',
+    'main > *:not(script):not(style)',
+    'section',
+    'article',
+    '.card',
+    '.glass-box',
+    '.product-card',
+    '.feature-card',
+    '.info-card',
+    '.panel',
+    '.content-block',
+    '.hero',
+    '.category-card',
+    '.logo-carousel-wrap',
+    '.atlas-inner',
+    '.shop-card',
+    '.blog-card',
+    '.gallery-card',
+    '.team-card',
+    '.mission-card'
+  ];
+
+  const tagForReveal = (el) => {
+    if (!el || processed.has(el) || el.dataset.revealSkip === 'true') return;
+
+    if (!el.classList.contains('reveal')) {
+      el.classList.add('reveal');
+    }
+
+    if (!el.dataset.direction) {
+      el.dataset.direction = (revealIndex % 2 === 0) ? 'left' : 'right';
+    }
+
+    const delay = el.dataset.direction === 'left' ? revealIndex * 0.05 : revealIndex * 0.06;
+    el.style.setProperty('--reveal-delay', `${delay}s`);
+
+    observer.observe(el);
+    processed.add(el);
+    revealIndex += 1;
+  };
+
+  const scan = () => {
+    selectors.forEach((selector) => {
+      document.querySelectorAll(selector).forEach(tagForReveal);
+    });
+  };
+
+  scan();
+  setTimeout(scan, 300);
+  setTimeout(scan, 1200);
 }
 
 function injectAnalytics() {
