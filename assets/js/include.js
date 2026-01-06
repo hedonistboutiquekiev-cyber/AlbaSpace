@@ -193,7 +193,7 @@ runAfterDomReady(() => {
     const floating = document.createElement('div');
     floating.className = 'ai-floating';
     floating.id = 'ai-floating-global';
-    const avatarSrc = '/assets/images/albamenai.jpg';
+    const avatarSrc = '/assets/images/albamenai.png';
     floating.innerHTML = `
       <div class="ai-hero-avatar" id="ai-avatar-trigger">
         <img src="${avatarSrc}" alt="Albamen AI">
