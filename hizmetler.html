@@ -151,7 +151,7 @@
     .reveal-card{
       opacity:0;
       transform:translateX(0);
-      transition:transform 1.65s cubic-bezier(.4,0,.2,1), opacity 1.65s ease;
+      transition:transform .55s cubic-bezier(.4,0,.2,1), opacity .55s ease;
     }
 
     .reveal-card.from-left{ transform:translateX(-44px); }
@@ -248,26 +248,11 @@
         card.classList.add('reveal-card', index % 2 === 0 ? 'from-left' : 'from-right');
       });
 
-      const queue = [];
-      let isAnimating = false;
-
-      const revealNext = () => {
-        if (isAnimating || queue.length === 0) return;
-        const nextCard = queue.shift();
-        isAnimating = true;
-        requestAnimationFrame(() => nextCard.classList.add('visible'));
-        setTimeout(() => {
-          isAnimating = false;
-          revealNext();
-        }, 1750);
-      };
-
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
             observer.unobserve(entry.target);
-            queue.push(entry.target);
-            revealNext();
           }
         });
       }, { threshold: 0.2 });
