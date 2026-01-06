@@ -162,21 +162,21 @@
     const headerSocial = document.querySelector('.header-social');
     if (!headerSocial) return false;
 
-    if (headerSocial.querySelector('.header-cart-link')) return true;
+    const topLangSwitch = headerSocial.querySelector('.top-lang-switch');
+    if (!topLangSwitch) return false;
+
+    if (topLangSwitch.querySelector('.header-cart-link')) return true;
 
     const link = document.createElement('a');
     link.href = '/cart.html';
-    link.className = 'header-cart-link';
+    link.className = 'lang-flag header-cart-link';
+    link.setAttribute('aria-label', 'Cart');
     link.innerHTML =
-      `<span class="header-cart-icon" style="position:relative;display:inline-block;">`
+      `<span class="header-cart-icon">`
         +
-        `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">`
-          +
-          `<path d="M7 7V6a5 5 0 0 1 10 0v1h2a1 1 0 0 1 .99 1.14l-1.6 11A2 2 0 0 1 16.41 21H7.59a2 2 0 0 1-1.98-1.86l-1.6-11A1 1 0 0 1 4 7h3zm2 0h6V6a3 3 0 0 0-6 0v1z" fill="currentColor"></path>`
+        `<img src="/assets/icons/chart.png" alt="Cart">`
         +
-        `</svg>`
-        +
-        `<span class="header-cart-count" data-cart-count style="position:absolute;top:-6px;right:-8px;min-width:16px;padding:1px 4px;border-radius:999px;background:var(--accent, #00c2ff);color:var(--header-bg, #020617);font-size:11px;font-weight:600;line-height:1.2;text-align:center;">`
+        `<span class="header-cart-count" data-cart-count>`
           +
           `0`
         +
@@ -184,7 +184,7 @@
       +
       `</span>`;
 
-    headerSocial.appendChild(link);
+    topLangSwitch.appendChild(link);
     return true;
   }
 

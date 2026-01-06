@@ -658,6 +658,39 @@ body{
   display:block;
 }
 
+.header-cart-link {
+  position: relative;
+}
+
+.header-cart-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-cart-icon img {
+  width: 22px;
+  height: 22px;
+  display: block;
+  object-fit: contain;
+}
+
+.header-cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 16px;
+  padding: 1px 4px;
+  border-radius: 999px;
+  background: var(--accent, #00c2ff);
+  color: var(--header-bg, #020617);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .top-lang-switch .lang-flag.active{
   background:transparent;
   border-color:transparent;
