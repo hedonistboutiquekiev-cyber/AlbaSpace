@@ -474,7 +474,7 @@ function injectVoiceWidget() {
   const floating = document.getElementById('ai-floating-global');
   if (!floating) return;
 
-  const avatarSrc = '/assets/images/albamenai.jpg';
+  const avatarSrc = '/assets/images/albamenai.png';
 
   // Кнопка голосового вызова
   const voiceBtn = document.createElement('button');
