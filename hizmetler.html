@@ -143,8 +143,23 @@
       h1{ font-size:30px; }
     }
 
-    @media (max-width: 560px){
+    @media (max-width: 768px){
       .grid{ grid-template-columns:1fr; }
+    }
+
+    /* ===== Scroll reveal ===== */
+    .reveal-card{
+      opacity:0;
+      transform:translateX(0);
+      transition:transform 1.65s cubic-bezier(.4,0,.2,1), opacity 1.65s ease;
+    }
+
+    .reveal-card.from-left{ transform:translateX(-44px); }
+    .reveal-card.from-right{ transform:translateX(44px); }
+
+    .reveal-card.visible{
+      opacity:1;
+      transform:translateX(0);
     }
   </style>
 </head>
@@ -224,5 +239,41 @@
   </main>
 
   <div data-include="/footer-tr.html"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.grid .card');
+
+      cards.forEach((card, index) => {
+        card.classList.add('reveal-card', index % 2 === 0 ? 'from-left' : 'from-right');
+      });
+
+      const queue = [];
+      let isAnimating = false;
+
+      const revealNext = () => {
+        if (isAnimating || queue.length === 0) return;
+        const nextCard = queue.shift();
+        isAnimating = true;
+        requestAnimationFrame(() => nextCard.classList.add('visible'));
+        setTimeout(() => {
+          isAnimating = false;
+          revealNext();
+        }, 1750);
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            observer.unobserve(entry.target);
+            queue.push(entry.target);
+            revealNext();
+          }
+        });
+      }, { threshold: 0.2 });
+
+      cards.forEach((card) => observer.observe(card));
+    });
+  </script>
 </body>
 </html>
