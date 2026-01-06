@@ -43,10 +43,10 @@
 .product-card::before {
   content: "";
   position: absolute;
-  top: 10px;
+  top: -20mm;
   left: 10px;
-  width: 48px;
-  height: 48px;
+  width: 96px;
+  height: 96px;
   background: url('/assets/icons/—Pngtree—30 discount png_6967430.png') center/contain no-repeat;
   pointer-events: none;
 }
