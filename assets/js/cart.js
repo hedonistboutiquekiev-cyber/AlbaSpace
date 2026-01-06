@@ -167,8 +167,11 @@
 
     if (topLangSwitch.querySelector('.header-cart-link')) return true;
 
+    const path = window.location.pathname || '';
+    const lang = (document.documentElement.lang || '').toLowerCase();
+    const isEnglish = lang.startsWith('en') || path.startsWith('/eng/');
     const link = document.createElement('a');
-    link.href = '/cart.html';
+    link.href = isEnglish ? '/eng/cart.html' : '/cart.html';
     link.className = 'lang-flag header-cart-link';
     link.setAttribute('aria-label', 'Cart');
     link.innerHTML =
@@ -185,17 +188,18 @@
       `</span>`;
 
     topLangSwitch.appendChild(link);
+    updateBadge();
     return true;
   }
 
-  // Update badges when the page loads. Also ensure the cart icon is injected
-  // even if the header HTML is added asynchronously by include.js.
-  document.addEventListener('DOMContentLoaded', () => {
+  function initCartUi() {
     updateBadge();
     try {
-      if (!ensureCartIcon()) {
+      const iconReady = ensureCartIcon();
+      if (!iconReady) {
         const observer = new MutationObserver(() => {
           if (ensureCartIcon()) {
+            updateBadge();
             observer.disconnect();
           }
         });
@@ -204,5 +208,11 @@
     } catch (err) {
       console.warn('Cart icon injection failed:', err);
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCartUi);
+  } else {
+    initCartUi();
+  }
 })();
