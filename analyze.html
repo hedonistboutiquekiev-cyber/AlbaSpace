@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animasyon Lisanslama Stratejisi: Netflix, Amazon, Disney+</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <!-- 
+        PALET SEÇİMİ: "Canlı ve Enerjik"
+        Dijital medya için yüksek kontrastlı renkler.
+        Ana Mor: #6C63FF
+        Aksiyon Pembesi: #FF6584
+        Teknoloji Mavisi: #36A2EB
+        Taze Turkuaz: #4BC0C0
+        Uyarı Sarısı: #FFCE56
+        Koyu Arka Plan: #1F2937
+    -->
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6; /* Gri-100 */
+            color: #1f2937; /* Gri-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        h1, h2, h3 {
+            color: #111827;
+        }
+        .section-header {
+            border-left: 5px solid #6C63FF;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .step-arrow {
+            font-size: 2rem;
+            color: #6C63FF;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navigasyon / Hero -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="font-black text-2xl text-indigo-600 tracking-tighter">ANIMATION SALES<span class="text-pink-500">.TR</span></div>
+            <nav class="hidden md:flex space-x-6 font-medium text-gray-600">
+                <a href="#market" class="hover:text-indigo-600 transition">Pazar</a>
+                <a href="#buyers" class="hover:text-indigo-600 transition">Alıcı Profilleri</a>
+                <a href="#money" class="hover:text-indigo-600 transition">Finansal Modeller</a>
+                <a href="#strategy" class="hover:text-indigo-600 transition">Strateji</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+        <!-- Başlık Bölümü -->
+        <section class="text-center mb-16 mt-8">
+            <h1 class="text-4xl md:text-6xl font-black text-gray-900 mb-4">Çizgi Filmimizi Satabilir Miyiz?</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Netflix, Amazon ve Disney+ Edinme Modelleri Üzerine Araştırma Analizi.
+                <br>
+                <span class="text-indigo-600 font-bold">Karar:</span> Evet, ancak izlenecek yol platforma göre büyük ölçüde değişir.
+            </p>
+        </section>
+
+        <!-- BÖLÜM 1: Pazar Manzarası -->
+        <section id="market" class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <div class="section-header">
+                        <h2 class="text-3xl font-bold">İzleyici Savaşı</h2>
+                    </div>
+                    <p class="text-gray-700 mb-4 text-lg leading-relaxed">
+                        Çizgi filminizi kime satacağınızı anlamak için, önce izleyiciye kimin sahip olduğunu anlamalısınız. Netflix devrime öncülük etse de, pazar artık bölünmüş durumda.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <strong>Netflix</strong>, "Yetişkin Animasyonu" ve belirli çocuk demografilerini aktif olarak arayan, hacimsel liderdir. <strong>Amazon</strong>, genellikle içerikleri paketleyen uyuyan bir devdir; <strong>Disney+</strong> ise devasa mevcut markası (Pixar, Marvel, Disney) dışında dış IP'lere (Fikri Mülkiyet) çoğunlukla kapalı bir "Duvarlı Bahçe"dir.
+                    </p>
+                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                        <strong class="text-indigo-700">İçgörü:</strong> Netflix en yüksek "abone kaybı" (churn) oranına sahiptir, bu da aboneleri tutmak için sürekli <em>yeni</em> içeriğe ihtiyaç duydukları anlamına gelir. Bu, onları taze bağımsız IP'ler için en olası alıcı yapar.
+                    </div>
+                </div>
+                <div class="card flex flex-col items-center justify-center">
+                    <h3 class="text-xl font-bold mb-4 text-center">Küresel Abone Tahmini (Milyon)</h3>
+                    <div class="chart-container">
+                        <canvas id="marketShareChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2 text-center">Kaynak: Küresel Yayın Akışı Tahminleri 2024</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 2: Alıcı Profilleri (Ne istiyorlar?) -->
+        <section id="buyers" class="mb-16">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold">Alıcı DNA'sı: Ne Arıyorlar?</h2>
+            </div>
+            <p class="text-gray-700 mb-8 max-w-4xl">
+                Her çizgi film her platforma uymaz. "Yavaş ilerleyen sanatsal bir filmi", "bir oturuşta izlenecek komedi" arayan bir platforma sunmak zaman kaybıdır. Her platformu 5 temel özelliğe göre puanladık: <strong>Yetişkin Animasyonu</strong> ilgisi, <strong>Çocuk İçeriği</strong> ilgisi, <strong>Bağımsız Stüdyolara</strong> açıklık, <strong>Risk</strong> bütçesi ve <strong>Münhasırlık</strong> talebi.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Netflix Profili -->
+                <div class="card border-t-4 border-red-500">
+                    <h3 class="text-xl font-bold text-red-500 mb-2">NETFLIX</h3>
+                    <p class="text-sm text-gray-600 mb-4">"Binge" Fabrikası. Anime, Yetişkin Komedisi ve Okul Öncesi sever. Yüksek hacimli alıcı.</p>
+                    <ul class="text-sm space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">🟢</span> Sunumlara Açık (Ajanlar aracılığıyla)</li>
+                        <li class="flex items-center"><span class="mr-2">🟢</span> Yüksek Bütçe</li>
+                        <li class="flex items-center"><span class="mr-2">🔴</span> Tam Münhasırlık Talep Eder</li>
+                    </ul>
+                </div>
+                <!-- Amazon Profili -->
+                <div class="card border-t-4 border-blue-400">
+                    <h3 class="text-xl font-bold text-blue-400 mb-2">AMAZON PRIME</h3>
+                    <p class="text-sm text-gray-600 mb-4">Hibrit Model. Orijinaller ve "Video Direct" (kendi yayınlama) karışımı. Niş içerikler için iyidir.</p>
+                    <ul class="text-sm space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">🟢</span> Kendin Yayınlayabilirsin (Belli Bölgeler)</li>
+                        <li class="flex items-center"><span class="mr-2">🟡</span> Orta Bütçe</li>
+                        <li class="flex items-center"><span class="mr-2">🟢</span> Münhasır Olmayan Seçenekler</li>
+                    </ul>
+                </div>
+                <!-- Disney Profili -->
+                <div class="card border-t-4 border-indigo-900">
+                    <h3 class="text-xl font-bold text-indigo-900 mb-2">DISNEY+</h3>
+                    <p class="text-sm text-gray-600 mb-4">Kale. Neredeyse tamamen iç IP (Marvel, Star Wars, Pixar). Girmesi çok zordur.</p>
+                    <ul class="text-sm space-y-2 mb-4">
+                        <li class="flex items-center"><span class="mr-2">🔴</span> Kapalı Ekosistem</li>
+                        <li class="flex items-center"><span class="mr-2">🟢</span> Devasa Pazarlama Gücü</li>
+                        <li class="flex items-center"><span class="mr-2">🔴</span> Marka Güvenliği Takıntısı</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Radar Grafik Konteyneri -->
+            <div class="card mt-8">
+                <h3 class="text-xl font-bold mb-4 text-center">Platform Uyumluluk Analizi</h3>
+                <div class="chart-container mx-auto">
+                    <canvas id="buyerRadarChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-gray-500 mt-4">
+                    <span class="inline-block w-3 h-3 rounded-full bg-red-500 mr-1"></span> Netflix
+                    <span class="inline-block w-3 h-3 rounded-full bg-blue-400 mr-1 ml-4"></span> Amazon
+                    <span class="inline-block w-3 h-3 rounded-full bg-indigo-900 mr-1 ml-4"></span> Disney+
+                </p>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 3: Para (Anlaşma Modelleri) -->
+        <section id="money" class="mb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="card h-full">
+                    <h3 class="text-xl font-bold mb-6 text-center">Tahmini Gelir Modelleri</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-sm text-gray-500 text-center">
+                        *Tahminler, 1 sezonluk animasyon dizisi (Bağımsız vs Stüdyo) için endüstri ortalamalarına dayanmaktadır.
+                    </div>
+                </div>
+                <div>
+                    <div class="section-header">
+                        <h2 class="text-3xl font-bold">Parayı Göster</h2>
+                    </div>
+                    <p class="text-gray-700 mb-4">
+                        Ödeme almanın üç ana yolu vardır. Bunu anlamak sunumunuz için çok önemlidir.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="p-4 bg-white border-l-4 border-indigo-500 shadow-sm">
+                            <h4 class="font-bold text-lg">1. Maliyet + Prim (Netflix Modeli)</h4>
+                            <p class="text-sm text-gray-600">Üretim maliyetlerinin %100'ünü + peşin bir primi (%10-20) öderler. Anında kar edersiniz, ancak IP'nin (Fikri Mülkiyet) <strong>mülkiyetini uzun süre kaybedersiniz</strong>. Yüksek risk, yüksek ödül.</p>
+                        </div>
+
+                        <div class="p-4 bg-white border-l-4 border-teal-500 shadow-sm">
+                            <h4 class="font-bold text-lg">2. Lisans Ücreti (Amazon/Hulu Modeli)</h4>
+                            <p class="text-sm text-gray-600">Çizgi filmi kendiniz yaparsınız. 1-3 yıl boyunca "kiralamak" için sabit bir ücret öderler. IP sizde kalır ve ticari ürün satabilirsiniz, ancak üretim maliyeti riskini siz taşırsınız.</p>
+                        </div>
+
+                        <div class="p-4 bg-white border-l-4 border-yellow-500 shadow-sm">
+                            <h4 class="font-bold text-lg">3. Gelir Paylaşımı (AVOD/FAST)</h4>
+                            <p class="text-sm text-gray-600">Tubi, Pluto TV, Amazon Video Direct. İzlenen saat başına kuruş öderler. Peşin para yoktur. Arşiv veya düşük bütçeli içerikler için iyidir.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 4: Stratejik Yol -->
+        <section id="strategy" class="mb-16">
+            <div class="section-header">
+                <h2 class="text-3xl font-bold">Anlaşmaya Giden Yol</h2>
+            </div>
+            <p class="text-gray-700 mb-8">
+                Netflix.com'a bir PDF yükleyemezsiniz. Bir sözleşme almak için "Kapı Bekçilerini" aşmalısınız.
+            </p>
+
+            <!-- Akış Şeması -->
+            <div class="relative">
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+                    
+                    <!-- Adım 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-indigo-100 relative">
+                        <div class="text-4xl mb-2">📦</div>
+                        <h4 class="font-bold text-lg mb-2">1. Paket</h4>
+                        <p class="text-xs text-gray-500">Dosya (Bible), Pilot Senaryo, Tanıtım Videosu. (Bitmiş görünmelidir).</p>
+                    </div>
+
+                    <!-- Ok Mobile -->
+                    <div class="md:hidden step-arrow">↓</div>
+
+                    <!-- Adım 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-indigo-100 relative">
+                        <div class="text-4xl mb-2">🤝</div>
+                        <h4 class="font-bold text-lg mb-2">2. Ajan / Toplayıcı</h4>
+                        <p class="text-xs text-gray-500">CAA, WME (Büyük) veya FilmHub (Bağımsız). Giriş bilgilerine onlar sahiptir.</p>
+                    </div>
+
+                    <!-- Ok Mobile -->
+                    <div class="md:hidden step-arrow">↓</div>
+
+                    <!-- Adım 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-indigo-100 relative">
+                        <div class="text-4xl mb-2">🎤</div>
+                        <h4 class="font-bold text-lg mb-2">3. Sunum (Pitch)</h4>
+                        <p class="text-xs text-gray-500">"Geliştirme Yöneticileri" ile toplantı. İzleyiciyi elde tutmaya odaklanın.</p>
+                    </div>
+
+                    <!-- Ok Mobile -->
+                    <div class="md:hidden step-arrow">↓</div>
+
+                    <!-- Adım 4 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg border-2 border-green-100 relative">
+                        <div class="text-4xl mb-2">✍️</div>
+                        <h4 class="font-bold text-lg mb-2">4. Sözleşme</h4>
+                        <p class="text-xs text-gray-500">Anlaşma Notu -> Uzun Form Sözleşme. Ödeme planı genellikle teslimata bağlıdır.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BÖLÜM 5: Olasılık Analizi (Scatter Plot) -->
+        <section class="mb-16">
+            <div class="card">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold">Başarı Olasılığı Matrisi</h3>
+                    <div class="text-sm bg-gray-100 px-3 py-1 rounded-full">
+                        Veri: Bağımsız Animasyon Anlaşmaları 2023-2024
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-6">
+                    Bu grafik, <strong>Proje Kalitesi/Cilası</strong> ile <strong>Platformun Niş İlgisi</strong> karşılaştırmasına dayalı olarak bir anlaşma olasılığını haritalandırır.
+                    <br><em>Anlaşma türlerini görmek için baloncukların üzerine gelin.</em>
+                </p>
+                <div class="chart-container" style="max-width: 800px; height: 400px;">
+                    <canvas id="probabilityChart"></canvas>
+                </div>
+                <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-xs text-center text-gray-500">
+                    <div>🟣 Yüksek Bütçeli Orijinal</div>
+                    <div>🔵 Satın Alma (Bitmiş Film)</div>
+                    <div>🔴 Ortak Yapım (Co-Pro)</div>
+                    <div>🟡 Red Bölgesi</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sonuç -->
+        <footer class="bg-gray-800 text-white p-8 rounded-t-2xl mt-12">
+            <h2 class="text-2xl font-bold mb-4">Stratejik Tavsiye</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="mb-4 text-gray-300">
+                        Temsilcisi olmayan yeni bir stüdyo için doğrudan Netflix veya Disney'e gitmek neredeyse imkansızdır.
+                    </p>
+                    <p class="text-gray-300">
+                        <strong>En İyi Hamleniz:</strong> Bir "Tanıtım Videosu" (1-2 dk) ve bir Sunum Dosyası (Pitch Bible) hazırlayın. Amazon/Tubi/Apple erişimi için <strong>Toplayıcılara (Aggregators)</strong> (FilmHub gibi) yaklaşın veya Netflix'e sunum yapmak için animasyon pazarlarında (MIFA/Annecy gibi) bir <strong>Satış Temsilcisi (Sales Agent)</strong> bulun.
+                    </p>
+                </div>
+                <div class="border-l border-gray-600 pl-6">
+                    <h4 class="font-bold text-indigo-400 mb-2">Başlangıç Kontrol Listesi:</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li>□ Hedef Kitleyi Belirle (Çocuk 6-11 vs Yetişkin)</li>
+                        <li>□ "Kavram Kanıtı" (Proof of Concept) Üret (Sanat + Hikaye)</li>
+                        <li>□ Türünüzdeki En İyi 10 Satış Temsilcisini Listeleyin</li>
+                        <li>□ Hukuk danışmanlığı için bütçe ayırın (Eğlence Avukatı)</li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- GRAFİK KONFİGÜRASYONU -->
+    <script>
+        // --- YARDIMCI: Etiket Sarma Fonksiyonu ---
+        function wrapLabel(str, maxChars) {
+            if (str.length <= maxChars) return str;
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= maxChars) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- YARDIMCI: Tooltip Callback Konfigürasyonu (Zorunlu) ---
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- GRAFİK 1: Pazar Payı (Doughnut) ---
+        const marketCtx = document.getElementById('marketShareChart').getContext('2d');
+        const marketLabels = ['Netflix', 'Amazon Prime', 'Disney+', 'Diğerleri (Hulu/HBO)'];
+        
+        new Chart(marketCtx, {
+            type: 'doughnut',
+            data: {
+                labels: marketLabels.map(l => wrapLabel(l, 16)),
+                datasets: [{
+                    data: [260, 210, 150, 300], // Milyon cinsinden kaba tahminler
+                    backgroundColor: ['#E50914', '#00A8E1', '#113CCF', '#9CA3AF'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltipConfig,
+                    title: {
+                        display: true,
+                        text: 'Küresel Aboneler (Milyon)'
+                    }
+                }
+            }
+        });
+
+        // --- GRAFİK 2: Alıcı DNA'sı (Radar) ---
+        const radarCtx = document.getElementById('buyerRadarChart').getContext('2d');
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Yetişkin Animasyonu', 'Çocuk/Aile', 'Bağımsız Dostu', 'Bütçe Büyüklüğü', 'Münhasırlık Şartı'],
+                datasets: [
+                    {
+                        label: 'Netflix',
+                        data: [90, 80, 60, 95, 100],
+                        borderColor: '#E50914',
+                        backgroundColor: 'rgba(229, 9, 20, 0.2)',
+                        pointBackgroundColor: '#E50914'
+                    },
+                    {
+                        label: 'Amazon',
+                        data: [60, 50, 80, 70, 40],
+                        borderColor: '#00A8E1',
+                        backgroundColor: 'rgba(0, 168, 225, 0.2)',
+                        pointBackgroundColor: '#00A8E1'
+                    },
+                    {
+                        label: 'Disney+',
+                        data: [20, 100, 10, 90, 100],
+                        borderColor: '#113CCF',
+                        backgroundColor: 'rgba(17, 60, 207, 0.2)',
+                        pointBackgroundColor: '#113CCF'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.1)' },
+                        grid: { color: 'rgba(0,0,0,0.1)' },
+                        pointLabels: {
+                            font: { size: 12, weight: 'bold' },
+                            color: '#374151' // Gray-700
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // --- GRAFİK 3: Gelir Modelleri (Bar) ---
+        const revCtx = document.getElementById('revenueChart').getContext('2d');
+        const revLabels = ['Maliyet + Prim (Netflix)', 'Lisans Ücreti (Sabit)', 'Gelir Payı (Video Direct)'];
+
+        new Chart(revCtx, {
+            type: 'bar',
+            data: {
+                labels: revLabels.map(l => wrapLabel(l, 16)),
+                datasets: [{
+                    label: 'Potansiyel Kazanç (Bin USD)',
+                    data: [500, 150, 30], // Göreceli ölçek
+                    backgroundColor: ['#6C63FF', '#4BC0C0', '#FFCE56'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        ticks: { display: false } // Rakamları gizle, göreceli ölçeği vurgula
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig,
+                    title: {
+                        display: true,
+                        text: 'Göreceli Finansal Ödül'
+                    }
+                }
+            }
+        });
+
+        // --- GRAFİK 4: Olasılık Matrisi (Bubble/Scatter) ---
+        const probCtx = document.getElementById('probabilityChart').getContext('2d');
+        new Chart(probCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'Anlaşma Bölgesi',
+                        data: [
+                            { x: 90, y: 90, r: 20, type: 'Netflix Orijinali' }, // Yüksek Cila, Yüksek Niş Uyumu
+                            { x: 80, y: 60, r: 15, type: 'Amazon Özel' },
+                            { x: 70, y: 80, r: 10, type: 'Hulu Lisansı' },
+                            { x: 40, y: 30, r: 8, type: 'Tub/Pluto (Gelir Payı)' },
+                            { x: 95, y: 20, r: 5, type: 'Red (Yanlış Uyum)' }
+                        ],
+                        backgroundColor: function(context) {
+                            const val = context.raw?.x;
+                            if (val > 85) return 'rgba(108, 99, 255, 0.8)'; // Mor
+                            if (val > 60) return 'rgba(75, 192, 192, 0.8)'; // Turkuaz
+                            return 'rgba(255, 206, 86, 0.8)'; // Sarı
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Üretim Kalitesi / Cila' },
+                        min: 0, max: 100
+                    },
+                    y: {
+                        title: { display: true, text: 'Platform Niş Uyumu' },
+                        min: 0, max: 100
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw.type;
+                            }
+                        }
+                    },
+                    legend: { display: false }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
