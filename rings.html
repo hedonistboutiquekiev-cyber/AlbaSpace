@@ -148,8 +148,8 @@
                     // Если рука в центре (0.5), то (0.5 - 0.5) = 0. Кольцо будет в центре (0).
                     // Это вернет кольцо на место.
                     
-                    const x = (p13.x + p14.x) / 2;
-                    const y = (p13.y + p14.y) / 2;
+                    const x = (p13.x + p14.x) / 1;
+                    const y = (p13.y + p14.y) / 1;
 
                     const screenX = (x - 0.5) * 10; 
                     const screenY = -(y - 0.5) * 10;
@@ -166,7 +166,7 @@
                     currentRing.rotation.z = angle - Math.PI / 2;
                     
                     // Дополнительный наклон для реалистичности
-                    currentRing.rotation.x = 0.2; 
+                    currentRing.rotation.x = 0.1; 
                 }
             }
             renderer.render(scene, camera3D);
