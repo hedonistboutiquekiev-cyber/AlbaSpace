@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AR Try-On v16 (Position Offset)</title>
+    <title>AR Try-On v17 (Fixed Center)</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
         
@@ -67,7 +67,6 @@
     <script type="module">
         import * as THREE from 'three';
         import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-        import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
         const models = ['ring_01.glb', 'ring_02.glb', 'ring_03.glb'];
         
@@ -86,23 +85,13 @@
         const renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        
-        renderer.outputEncoding = THREE.sRGBEncoding;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
 
-        const pmremGenerator = new THREE.PMREMGenerator(renderer);
-        scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-
-        // Lighting
+        // Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 3.0);
-        dirLight.position.set(2, 5, 5);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+        dirLight.position.set(3, 10, 10);
         scene.add(dirLight);
-        const pointLight = new THREE.PointLight(0xffffff, 2.0);
-        pointLight.position.set(-2, 3, 2);
-        scene.add(pointLight);
 
         // Loader
         const loader = new GLTFLoader();
@@ -112,24 +101,12 @@
 
             loader.load(models[index], (gltf) => {
                 currentRing = gltf.scene;
-                currentRing.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                        if(child.material) {
-                            child.material.envMapIntensity = 1.5;
-                            child.material.needsUpdate = true;
-                        }
-                    }
-                });
                 currentRing.scale.set(10, 10, 10); 
                 scene.add(currentRing);
             }, undefined, (error) => {
                 console.log("Fallback placeholder");
-                const geo = new THREE.TorusGeometry(0.15, 0.03, 16, 32);
-                const mat = new THREE.MeshStandardMaterial({ 
-                    color: 0xFFD700, metalness: 1.0, roughness: 0.1, envMapIntensity: 2.0 
-                });
+                const geo = new THREE.TorusGeometry(0.12, 0.02, 16, 32);
+                const mat = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.2 });
                 currentRing = new THREE.Mesh(geo, mat);
                 currentRing.rotation.x = Math.PI / 2;
                 scene.add(currentRing);
@@ -137,7 +114,7 @@
         }
         loadRing(0);
 
-        // MediaPipe Setup
+        // MediaPipe
         const hands = new window.Hands({locateFile: (file) => {
             return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
         }});
@@ -145,8 +122,8 @@
         hands.setOptions({
             maxNumHands: 1,
             modelComplexity: 1,
-            minDetectionConfidence: 0.6,
-            minTrackingConfidence: 0.6
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
         });
 
         let textHidden = false;
@@ -160,40 +137,36 @@
                 }
                 
                 const landmarks = results.multiHandLandmarks[0];
-                const p13 = landmarks[13]; 
-                const p14 = landmarks[14]; 
+                
+                // ТОЧКИ БЕЗЫМЯННОГО ПАЛЬЦА
+                const p13 = landmarks[13]; // Основание
+                const p14 = landmarks[14]; // Сгиб
 
                 if (currentRing) {
-                    // --- ЛОГИКА ПОЗИЦИИ ---
-                    const lerpFactor = 0.30; 
+                    // --- ИСПРАВЛЕННАЯ МАТЕМАТИКА ---
+                    // 0.5 - это точный центр экрана.
+                    // Если рука в центре (0.5), то (0.5 - 0.5) = 0. Кольцо будет в центре (0).
+                    // Это вернет кольцо на место.
                     
-                    // Базовая позиция на пальце
-                    const x = p13.x + (p14.x - p13.x) * lerpFactor;
-                    const y = p13.y + (p14.y - p13.y) * lerpFactor;
-                    
-                    // === ВАЖНО: РУЧНАЯ КОРРЕКТИРОВКА ===
-                    // Изменяйте эти значения, чтобы двигать кольцо.
-                    // Положительное X = вправо, Положительное Y = вверх.
-                    const offsetX = 0.2; // Примерно "полсантиметра правее"
-                    const offsetY = 0.2; // Примерно "2 сантиметра выше"
-                    // ===================================
+                    const x = (p13.x + p14.x) / 2;
+                    const y = (p13.y + p14.y) / 2;
 
-                    const screenZ = -6; 
-                    // Добавляем offsetX и offsetY к финальным координатам
-                    const screenX = ((x - 0.1) * 10) + offsetX; 
-                    const screenY = (-(y - 0.1) * 10) + offsetY;
+                    const screenX = (x - 0.5) * 10; 
+                    const screenY = -(y - 0.5) * 10;
+                    const screenZ = -5;
                     
                     currentRing.position.set(screenX, screenY, screenZ);
 
                     // Вращение
                     const dx = p14.x - p13.x;
                     const dy = p14.y - p13.y;
-                    let angleZ = Math.atan2(dy, dx); 
-                    const dz = p14.z - p13.z; 
+                    const angle = Math.atan2(dy, dx);
                     
-                    currentRing.rotation.set(0, 0, 0);
-                    currentRing.rotation.z = angleZ - Math.PI / 2; 
-                    currentRing.rotation.x = -dz * 2; 
+                    // Поворот вокруг Z (вдоль пальца)
+                    currentRing.rotation.z = angle - Math.PI / 2;
+                    
+                    // Дополнительный наклон для реалистичности
+                    currentRing.rotation.x = 0.2; 
                 }
             }
             renderer.render(scene, camera3D);
