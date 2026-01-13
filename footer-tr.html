@@ -1,3 +1,32 @@
+<!-- Добавьте эти стили в ваш основной CSS файл (например, site.css) или оставьте их здесь -->
+<style>
+  .footer-bottom {
+    /* Добавлено для центрирования содержимого */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-legal-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 16px;
+    flex-wrap: wrap; /* Для корректного отображения на мобильных устройствах */
+    padding: 0 15px;
+  }
+  .footer-legal-links a {
+    color: #9ca3af; /* text-muted */
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .footer-legal-links a:hover {
+    color: #e5e7eb; /* text-main */
+    text-decoration: underline;
+  }
+</style>
+
 <footer class="footer footer--tr">
   <div class="footer-grid footer-grid--3">
     <!-- LEFT: Logo + Social -->
@@ -30,7 +59,6 @@
         <span class="footer-action__value">+905387781018</span>
         <span class="footer-action__hint">Bizi arayın</span>
       </a>
-
       <a class="footer-action" href="mailto:hello@albaspace.com.tr">
         <span class="footer-action__title">E-mail</span>
         <span class="footer-action__value">hello@albaspace.com.tr</span>
@@ -48,7 +76,6 @@
         <span class="footer-action__value">Sarıçam / ADANA</span>
         <span class="footer-action__hint">Haritada göster</span>
       </a>
-
       <a class="footer-action"
          href="https://www.google.com/maps/search/?api=1&query=Go%20Ofis%20T%C3%BCrkmenba%C5%9F%C4%B1%2C%20Sun%20City%20Evleri%2C%20T%C3%BCrkmenba%C5%9F%C4%B1%20Blv.%20No%3A26%2FA%2C%2001360%20Adana"
          target="_blank" rel="noopener noreferrer">
@@ -60,7 +87,14 @@
     </div>
   </div>
 
+  <!-- === ИЗМЕНЕННЫЙ БЛОК === -->
   <div class="footer-bottom">
+    <div class="footer-legal-links">
+      <a href="/teslimat-ve-iade-sartlari.html">Teslimat ve İade Şartları</a>
+      <a href="/gizlilik-sozlesmesi.html">Gizlilik Sözleşmesi</a>
+    </div>
     <p>© AlbaSpace 2026</p>
   </div>
+  <!-- === КОНЕЦ ИЗМЕНЕННОГО БЛОКА === -->
+
 </footer>
