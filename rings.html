@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AR Try-On v19 (Occlusion + Rotation)</title>
+    <title>AR Try-On v20 (No Occlusion)</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
         
@@ -72,14 +72,16 @@
         let currentModelIndex = 0;
         let currentRing = null;
 
-        // --- НАСТРОЙКИ ПОЗИЦИИ И ПОВОРОТА ---
-        const OFFSET_Y = 0.45;  // Подняли еще чуть выше
-        const OFFSET_X = 0.05; 
+        // --- НАСТРОЙКИ ПОЗИЦИИ ---
+        const OFFSET_Y = 0.45;  // Высота на пальце
+        const OFFSET_X = 0.05;  // Сдвиг вправо/влево
         
-        // Поворот по оси Z (вокруг самого пальца). 
-        // Если кольцо смотрит камнем вбок, меняйте это значение (в радианах).
-        // 0.1 = немного повернуть, Math.PI = развернуть на 180 градусов.
-        const ROTATION_Z_OFFSET = 0.0; 
+        // Сдвиг ВПЕРЕД (к камере). 
+        // 0 = стандартно.
+        // 1.0 = ближе к экрану (эффект "выдвижения" вперед).
+        const OFFSET_Z = 1.0;   
+
+        const ROTATION_Z_OFFSET = 0.0; // Поворот кольца вокруг пальца
 
         // Scene
         const scene = new THREE.Scene();
@@ -101,17 +103,6 @@
         dirLight.position.set(0, 5, 5);
         scene.add(dirLight);
 
-        // --- OCCLUDER (НЕВИДИМЫЙ ПАЛЕЦ) ---
-        // Создаем цилиндр, который будет "маской" для пальца
-        // colorWrite: false делает его невидимым, но он перекрывает объекты за собой
-        const occlusionGeo = new THREE.CylinderGeometry(1.1, 1.1, 5, 32);
-        const occlusionMat = new THREE.MeshBasicMaterial({ colorWrite: false }); 
-        const occluder = new THREE.Mesh(occlusionGeo, occlusionMat);
-        
-        // Важно: renderOrder. Окклюдер рисуется первым (0), кольцо вторым (1).
-        occluder.renderOrder = 0; 
-        scene.add(occluder);
-
         // Loader
         const loader = new GLTFLoader();
 
@@ -121,7 +112,6 @@
             loader.load(models[index], (gltf) => {
                 currentRing = gltf.scene;
                 currentRing.scale.set(10, 10, 10); 
-                currentRing.renderOrder = 1; // Рисуем ПОСЛЕ окклюдера
                 scene.add(currentRing);
             }, undefined, (error) => {
                 console.log("Fallback placeholder");
@@ -129,7 +119,6 @@
                 const mat = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 1.0, roughness: 0.1 });
                 currentRing = new THREE.Mesh(geo, mat);
                 currentRing.rotation.x = Math.PI / 2;
-                currentRing.renderOrder = 1;
                 scene.add(currentRing);
             });
         }
@@ -161,7 +150,7 @@
                 
                 const landmarks = results.multiHandLandmarks[0];
                 
-                // СРЕДНИЙ ПАЛЕЦ
+                // СРЕДНИЙ ПАЛЕЦ (9 и 10)
                 const pBase = landmarks[9]; 
                 const pJoint = landmarks[10]; 
 
@@ -172,35 +161,22 @@
 
                     let screenX = (x - 0.5) * 10 + OFFSET_X; 
                     let screenY = -(y - 0.5) * 10 + OFFSET_Y;
-                    const screenZ = -6;
                     
-                    // Позиция кольца
+                    // БАЗОВАЯ ГЛУБИНА (-6) + СДВИГ ВПЕРЕД (OFFSET_Z)
+                    // Чем больше значение, тем ближе к камере
+                    const screenZ = -6 + OFFSET_Z; 
+                    
                     currentRing.position.set(screenX, screenY, screenZ);
-
-                    // Позиция окклюдера (невидимого пальца) - та же, что и у кольца
-                    occluder.position.copy(currentRing.position);
-                    
-                    // Масштаб окклюдера (чуть подгоняем под кольцо, чтобы он был внутри)
-                    // Масштаб кольца 10, радиус окклюдера 1.1 * 0.9 ~ 1.0. 
-                    // Можно менять scale, чтобы сделать палец "толще" или "тоньше"
-                    occluder.scale.set(0.9, 1, 0.9);
 
                     // Вращение
                     const dx = pJoint.x - pBase.x;
                     const dy = pJoint.y - pBase.y;
                     const angle = Math.atan2(dy, dx);
                     
-                    // Основной поворот кольца и окклюдера (вдоль пальца)
-                    const finalAngle = angle - Math.PI / 2;
-                    currentRing.rotation.z = finalAngle + ROTATION_Z_OFFSET;
+                    currentRing.rotation.z = (angle - Math.PI / 2) + ROTATION_Z_OFFSET;
                     
-                    // Окклюдер тоже поворачиваем так же, чтобы цилиндр совпал с пальцем
-                    occluder.rotation.z = finalAngle; 
-                    
-                    // Наклон кольца (для красоты)
+                    // Наклон кольца
                     currentRing.rotation.x = 0.2;
-                    // Окклюдер наклоняем так же, иначе он вылезет
-                    occluder.rotation.x = 0.2; 
                 }
             }
             renderer.render(scene, camera3D);
