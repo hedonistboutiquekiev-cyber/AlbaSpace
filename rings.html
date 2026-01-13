@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AR Try-On v20 (No Occlusion)</title>
+    <title>AR Try-On v21 (Horizontal Rotation)</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
         
@@ -72,16 +72,15 @@
         let currentModelIndex = 0;
         let currentRing = null;
 
-        // --- НАСТРОЙКИ ПОЗИЦИИ ---
-        const OFFSET_Y = 0.45;  // Высота на пальце
-        const OFFSET_X = 0.05;  // Сдвиг вправо/влево
-        
-        // Сдвиг ВПЕРЕД (к камере). 
-        // 0 = стандартно.
-        // 1.0 = ближе к экрану (эффект "выдвижения" вперед).
+        // --- НАСТРОЙКИ ---
+        const OFFSET_Y = 0.45;  
+        const OFFSET_X = 0.05;  
         const OFFSET_Z = 1.0;   
 
-        const ROTATION_Z_OFFSET = 0.0; // Поворот кольца вокруг пальца
+        // --- ВРАЩЕНИЕ ---
+        // Было 0.0. Ставим Math.PI / 2 (это 90 градусов).
+        // Это развернет кольцо из "вертикального" в "горизонтальное" положение на пальце.
+        const ROTATION_Z_OFFSET = Math.PI / 2; 
 
         // Scene
         const scene = new THREE.Scene();
@@ -150,7 +149,7 @@
                 
                 const landmarks = results.multiHandLandmarks[0];
                 
-                // СРЕДНИЙ ПАЛЕЦ (9 и 10)
+                // СРЕДНИЙ ПАЛЕЦ
                 const pBase = landmarks[9]; 
                 const pJoint = landmarks[10]; 
 
@@ -161,9 +160,6 @@
 
                     let screenX = (x - 0.5) * 10 + OFFSET_X; 
                     let screenY = -(y - 0.5) * 10 + OFFSET_Y;
-                    
-                    // БАЗОВАЯ ГЛУБИНА (-6) + СДВИГ ВПЕРЕД (OFFSET_Z)
-                    // Чем больше значение, тем ближе к камере
                     const screenZ = -6 + OFFSET_Z; 
                     
                     currentRing.position.set(screenX, screenY, screenZ);
@@ -173,9 +169,9 @@
                     const dy = pJoint.y - pBase.y;
                     const angle = Math.atan2(dy, dx);
                     
+                    // Применяем смещение на 90 градусов
                     currentRing.rotation.z = (angle - Math.PI / 2) + ROTATION_Z_OFFSET;
                     
-                    // Наклон кольца
                     currentRing.rotation.x = 0.2;
                 }
             }
