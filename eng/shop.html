@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Shop – AlbaSpace</title>
-  <!-- Temel stil dosyaları ve mağazaya özel stil -->
+  <title>Store – AlbaSpace</title>
+
+  <!-- Basic style files and shop-specific style -->
   <link rel="stylesheet" href="/assets/css/site.css">
   <link rel="stylesheet" href="/assets/css/shop.css">
+
   <style>
     :root {
       --header-bg: #020617;
@@ -17,103 +19,108 @@
     }
     body { background: #020617 url("/assets/images/space-bg.jpg") center/cover fixed no-repeat; color: var(--text-main); }
   </style>
-  <!-- Header/footer'ı yüklemek ve sepet mantığını eklemek için scriptler -->
+
+  <!-- Scripts to load header/footer and add cart logic -->
   <script src="/assets/js/include.js" defer></script>
   <script src="/assets/js/menu-toggle.js" defer></script>
   <script src="/assets/js/cart.js" defer></script>
 </head>
 <body>
-  <!-- Dinamik başlık dahil etme. include.js, bunu mevcut sitenizdeki
-       /header-en.html içeriğiyle değiştirecektir. -->
+
+  <!-- Dynamic header inclusion. include.js will replace this with 
+       your existing /header-en.html content. -->
   <div data-include="/header-en.html"></div>
 
   <main class="shop-container">
-    <h1 style="text-align:center;margin-bottom:8px;">Shop</h1>
+    <h1 style="text-align:center;margin-bottom:8px;">Store</h1>
     <p style="text-align:center;margin-bottom:32px;color:var(--text-muted);">Discover AlbaSpace clothing and collections.</p>
+
     <div class="product-list">
       <!-- 1 hoodie1 -->
-      <a href="/eng/product-hoodie1.html" class="product-card">
-        <img src="/assets/products/hoodie1.png" alt="Hoodie" loading="lazy">
+      <a href="product-hoodie1.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="assets/products/hoodie1.png" alt="Hoodie" loading="lazy">
         <div class="product-info">
           <h3>Hoodie</h3>
-          <div class="product-price"><del>1400.00 TL</del> - discount %30 980.00 TL</div>
+          <div class="product-price"><del>1400.00 TL</del> 30% discount 980.00 TL</div>
         </div>
       </a>
+
       <!-- 2 Hoodie -->
-      <a href="/eng/product-hoodie.html" class="product-card">
+      <a href="product-hoodie.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
         <img src="/assets/products/hoodie.png" alt="Hoodie" loading="lazy">
         <div class="product-info">
           <h3>Hoodie</h3>
-          <div class="product-price"><del>1400.00 TL</del> - discount 30% - 980.00 TL</div>
+          <div class="product-price"><del>1400.00 TL</del> 30% discount 980.00 TL</div>
         </div>
       </a>
-      <!-- 3 Hat -->
-      <a href="/eng/product-hat.html" class="product-card">
-        <img src="/assets/products/hat.png" alt="Cüb">
+
+      <!-- 3 Infinity Cube -->
+      <a href="product-hat.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/hat.png" alt="Infinity Cube" loading="lazy">
         <div class="product-info">
-          <h3>Cüb</h3>
-          <div class="product-price"><del>150.00 TL</del> - discount %20 - 120.00 TL</div>
+          <h3>Infinity Cube</h3>
+          <div class="product-price"><del>155.00 TL</del> 30% discount 120.00 TL</div>
         </div>
       </a>
 
-
-      <!-- 4 Stanley -->
-      <a href="/eng/product-stanley.html" class="product-card">
-        <img src="/assets/products/stanley.png" alt="Stanley Thermos">
+      <!-- 4 Stanley Thermos -->
+      <a href="product-stanley.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/stanley.png" alt="Stanley Thermos" loading="lazy">
         <div class="product-info">
           <h3>Stanley Thermos</h3>
-          <div class="product-price"><del>2880.00 TL</del> - discount %20 - 2400.00 TL</div>
+          <div class="product-price"><del>3120.00 TL</del> 30% discount 2400.00 TL</div>
         </div>
       </a>
 
-      <!-- 5 T-Shirt -->
-      <a href="/eng/product-shirt.html" class="product-card">
-        <img src="/assets/products/shirt.png" alt="T-Shirt">
+      <!-- 4 T-Shirt -->
+      <a href="product-shirt.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/shirt.png" alt="T-Shirt" loading="lazy">
         <div class="product-info">
           <h3>T-Shirt</h3>
-          <div class="product-price"><del>900.00 TL</del> - discount 30% - 630.00 TL</div>
+          <div class="product-price"><del>900.00 TL</del> 30% discount 630.00 TL</div>
         </div>
       </a>
 
-      <!-- 6 Shirt 1 -->
-      <a href="/eng/product-shirt1.html" class="product-card">
-        <img src="/assets/products/shirt1.png" alt="T-Shirt">
+      <!-- 5 Shirt 1 -->
+      <a href="product-shirt1.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/shirt1.png" alt="T-Shirt" loading="lazy">
         <div class="product-info">
           <h3>T-Shirt</h3>
-          <div class="product-price"><del>900.00 TL</del> - discount 30% - 630.00 TL</div>
+          <div class="product-price"><del>900.00 TL</del> 30% discount 630.00 TL</div>
         </div>
       </a>
 
-
-      <!-- 7 Book -->
-      <a href="/eng/product-albamenvelara.html" class="product-card">
-        <img src="/assets/products/albamenvelara.jpg" alt="Book">
+      <!-- 4 book -->
+      <a href="product-albamenvelara.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/albamenvelara.jpg" alt="Book" loading="lazy">
         <div class="product-info">
           <h3>Book</h3>
-          <div class="product-price"><del>1500.00 TL</del> - discount 30% 1000.00 TL</div>
+          <div class="product-price"><del>1500.00 TL</del> 30% discount 1000.00 TL</div>
         </div>
       </a>
 
-      <!-- 8 Book PDF -->
-      <a href="/eng/product-albamenvelara1.html" class="product-card">
-        <img src="/assets/products/albemanvelara1.jpg" alt="Book PDF">
+      <!-- 4 book -->
+      <a href="product-albamenvelara1.html" class="product-card">
+        <div class="product-badge" aria-hidden="true"></div>
+        <img src="/assets/products/albemanvelara1.jpg" alt="Book PDF" loading="lazy">
         <div class="product-info">
           <h3>Book PDF</h3>
-          <div class="product-price"><del>400.00 TL</del> - discount 60% 160.00 TL</div>
+          <div class="product-price"><del>400.00 TL</del> 60% discount 160.00 TL</div>
         </div>
       </a>
-
-
-
-
-
-
 
     </div>
   </main>
 
-  <!-- Dinamik footer dahil etme -->
+  <!-- Dynamic footer inclusion -->
   <div data-include="/footer-en.html"></div>
+
 </body>
 </html>
-    
