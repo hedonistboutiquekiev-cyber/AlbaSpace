@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AR Try-On v17 (Fixed Metals & Position)</title>
+    <title>AR Try-On v18 (Middle Finger)</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
         
@@ -61,7 +61,7 @@
     <script type="module">
         import * as THREE from 'three';
         import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-        import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'; // Импорт окружения
+        import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 
         const models = ['ring_01.glb', 'ring_02.glb', 'ring_03.glb'];
         
@@ -72,12 +72,11 @@
         let currentModelIndex = 0;
         let currentRing = null;
 
-        // --- НАСТРОЙКИ СМЕЩЕНИЯ (МОЖНО МЕНЯТЬ ТУТ) ---
-        // Положительный Y поднимает кольцо вверх (по экрану)
-        // Положительный X сдвигает вправо
-        const OFFSET_Y = 0.4;  // Подняли выше
-        const OFFSET_X = 0.10; // Сдвинули правее
-        const OFFSET_Z = 0.10;
+        // --- НАСТРОЙКИ СМЕЩЕНИЯ ---
+        // OFFSET_Y = 0.4 (поднимает кольцо выше)
+        // OFFSET_X = 0.05 (небольшой сдвиг вправо, так как средний палец центральнее)
+        const OFFSET_Y = 0.4;  
+        const OFFSET_X = 0.05; 
 
         // Scene
         const scene = new THREE.Scene();
@@ -88,21 +87,19 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
         
-        // ВАЖНО: Настройки цвета и тона для корректного отображения металлов
+        // Настройки для металла
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
         // Lights & Environment
-        // Добавляем карту окружения для отражений на металле
         const pmremGenerator = new THREE.PMREMGenerator(renderer);
         scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
-        // Дополнительный свет, чтобы модель не была темной спереди
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Мягкий общий свет
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
         
         const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-        dirLight.position.set(0, 5, 5); // Свет сверху-спереди
+        dirLight.position.set(0, 5, 5);
         scene.add(dirLight);
 
         // Loader
@@ -118,7 +115,6 @@
             }, undefined, (error) => {
                 console.log("Fallback placeholder");
                 const geo = new THREE.TorusGeometry(0.12, 0.02, 16, 32);
-                // Metalness 1.0 и Roughness 0.1 дадут хороший блеск с картой окружения
                 const mat = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 1.0, roughness: 0.1 });
                 currentRing = new THREE.Mesh(geo, mat);
                 currentRing.rotation.x = Math.PI / 2;
@@ -153,27 +149,27 @@
                 
                 const landmarks = results.multiHandLandmarks[0];
                 
-                // ТОЧКИ БЕЗЫМЯННОГО ПАЛЬЦА
-                const p13 = landmarks[13]; // Основание (MCP)
-                const p14 = landmarks[14]; // Сгиб (PIP)
+                // --- ИЗМЕНЕНИЕ: ТОЧКИ СРЕДНЕГО ПАЛЬЦА (MIDDLE FINGER) ---
+                // Точка 9: MCP (основание пальца)
+                // Точка 10: PIP (первый сгиб)
+                const pBase = landmarks[9]; 
+                const pJoint = landmarks[10]; 
 
                 if (currentRing) {
-                    // Вычисляем середину между суставами
-                    const x = (p13.x + p14.x) / 2;
-                    const y = (p13.y + p14.y) / 2;
+                    // Середина между основанием и сгибом
+                    const x = (pBase.x + pJoint.x) / 2;
+                    const y = (pBase.y + pJoint.y) / 2;
 
-                    // Преобразование координат
-                    // Мы добавляем OFFSET_X и OFFSET_Y к финальным экранным координатам
+                    // Координаты + Смещения
                     let screenX = (x - 0.5) * 10 + OFFSET_X; 
                     let screenY = -(y - 0.5) * 10 + OFFSET_Y;
-                    
                     const screenZ = -6;
                     
                     currentRing.position.set(screenX, screenY, screenZ);
 
                     // Вращение
-                    const dx = p14.x - p13.x;
-                    const dy = p14.y - p13.y;
+                    const dx = pJoint.x - pBase.x;
+                    const dy = pJoint.y - pBase.y;
                     const angle = Math.atan2(dy, dx);
                     
                     // Поворот вокруг Z (вдоль пальца)
