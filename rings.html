@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AR Try-On v18 (Middle Finger)</title>
+    <title>AR Try-On v19 (Occlusion + Rotation)</title>
     <style>
         body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
         
@@ -72,11 +72,14 @@
         let currentModelIndex = 0;
         let currentRing = null;
 
-        // --- НАСТРОЙКИ СМЕЩЕНИЯ ---
-        // OFFSET_Y = 0.4 (поднимает кольцо выше)
-        // OFFSET_X = 0.05 (небольшой сдвиг вправо, так как средний палец центральнее)
-        const OFFSET_Y = 0.4;  
+        // --- НАСТРОЙКИ ПОЗИЦИИ И ПОВОРОТА ---
+        const OFFSET_Y = 0.45;  // Подняли еще чуть выше
         const OFFSET_X = 0.05; 
+        
+        // Поворот по оси Z (вокруг самого пальца). 
+        // Если кольцо смотрит камнем вбок, меняйте это значение (в радианах).
+        // 0.1 = немного повернуть, Math.PI = развернуть на 180 градусов.
+        const ROTATION_Z_OFFSET = 0.0; 
 
         // Scene
         const scene = new THREE.Scene();
@@ -86,21 +89,28 @@
         const renderer = new THREE.WebGLRenderer({ canvas: canvasElement, alpha: true, antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        
-        // Настройки для металла
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
         // Lights & Environment
         const pmremGenerator = new THREE.PMREMGenerator(renderer);
         scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
-        
         const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
         dirLight.position.set(0, 5, 5);
         scene.add(dirLight);
+
+        // --- OCCLUDER (НЕВИДИМЫЙ ПАЛЕЦ) ---
+        // Создаем цилиндр, который будет "маской" для пальца
+        // colorWrite: false делает его невидимым, но он перекрывает объекты за собой
+        const occlusionGeo = new THREE.CylinderGeometry(1.1, 1.1, 5, 32);
+        const occlusionMat = new THREE.MeshBasicMaterial({ colorWrite: false }); 
+        const occluder = new THREE.Mesh(occlusionGeo, occlusionMat);
+        
+        // Важно: renderOrder. Окклюдер рисуется первым (0), кольцо вторым (1).
+        occluder.renderOrder = 0; 
+        scene.add(occluder);
 
         // Loader
         const loader = new GLTFLoader();
@@ -111,6 +121,7 @@
             loader.load(models[index], (gltf) => {
                 currentRing = gltf.scene;
                 currentRing.scale.set(10, 10, 10); 
+                currentRing.renderOrder = 1; // Рисуем ПОСЛЕ окклюдера
                 scene.add(currentRing);
             }, undefined, (error) => {
                 console.log("Fallback placeholder");
@@ -118,6 +129,7 @@
                 const mat = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 1.0, roughness: 0.1 });
                 currentRing = new THREE.Mesh(geo, mat);
                 currentRing.rotation.x = Math.PI / 2;
+                currentRing.renderOrder = 1;
                 scene.add(currentRing);
             });
         }
@@ -149,34 +161,46 @@
                 
                 const landmarks = results.multiHandLandmarks[0];
                 
-                // --- ИЗМЕНЕНИЕ: ТОЧКИ СРЕДНЕГО ПАЛЬЦА (MIDDLE FINGER) ---
-                // Точка 9: MCP (основание пальца)
-                // Точка 10: PIP (первый сгиб)
+                // СРЕДНИЙ ПАЛЕЦ
                 const pBase = landmarks[9]; 
                 const pJoint = landmarks[10]; 
 
                 if (currentRing) {
-                    // Середина между основанием и сгибом
+                    // Координаты
                     const x = (pBase.x + pJoint.x) / 2;
                     const y = (pBase.y + pJoint.y) / 2;
 
-                    // Координаты + Смещения
                     let screenX = (x - 0.5) * 10 + OFFSET_X; 
                     let screenY = -(y - 0.5) * 10 + OFFSET_Y;
                     const screenZ = -6;
                     
+                    // Позиция кольца
                     currentRing.position.set(screenX, screenY, screenZ);
+
+                    // Позиция окклюдера (невидимого пальца) - та же, что и у кольца
+                    occluder.position.copy(currentRing.position);
+                    
+                    // Масштаб окклюдера (чуть подгоняем под кольцо, чтобы он был внутри)
+                    // Масштаб кольца 10, радиус окклюдера 1.1 * 0.9 ~ 1.0. 
+                    // Можно менять scale, чтобы сделать палец "толще" или "тоньше"
+                    occluder.scale.set(0.9, 1, 0.9);
 
                     // Вращение
                     const dx = pJoint.x - pBase.x;
                     const dy = pJoint.y - pBase.y;
                     const angle = Math.atan2(dy, dx);
                     
-                    // Поворот вокруг Z (вдоль пальца)
-                    currentRing.rotation.z = angle - Math.PI / 2;
+                    // Основной поворот кольца и окклюдера (вдоль пальца)
+                    const finalAngle = angle - Math.PI / 2;
+                    currentRing.rotation.z = finalAngle + ROTATION_Z_OFFSET;
                     
-                    // Дополнительный наклон
-                    currentRing.rotation.x = 0.2; 
+                    // Окклюдер тоже поворачиваем так же, чтобы цилиндр совпал с пальцем
+                    occluder.rotation.z = finalAngle; 
+                    
+                    // Наклон кольца (для красоты)
+                    currentRing.rotation.x = 0.2;
+                    // Окклюдер наклоняем так же, иначе он вылезет
+                    occluder.rotation.x = 0.2; 
                 }
             }
             renderer.render(scene, camera3D);
